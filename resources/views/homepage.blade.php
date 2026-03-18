@@ -86,7 +86,7 @@
         facilities, or administration and track their status.
     </p>
 
-    <!-- Simple buttons (NO auth error) -->
+
     <a href="/login" class="btn">Login</a>
     <a href="/register" class="btn">Register</a>
 </div>
