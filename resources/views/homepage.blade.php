@@ -92,7 +92,7 @@
 </div>
 
 <footer>
-    <p>&copy; {{ date('Y') }} Student Grievance Portal</p>
+    <p>Student Grievance Portal</p>
 </footer>
 
 </body>
