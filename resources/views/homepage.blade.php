@@ -4,123 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Grievance Portal</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f4f6f9;
-        }
-
-        header {
-            background: #2c3e50;
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        header h1 {
-            margin-bottom: 5px;
-        }
-
-        header p {
-            margin-top: 5px;
-            color: #ccc;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 60px 20px 30px;
-        }
-
-        .hero h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            color: #555;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #1abc9c;
-            color: white;
-            padding: 12px 25px;
-            margin: 10px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .btn:hover {
-            background: #16a085;
-        }
-
-        .cards {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 20px 20px 60px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px 20px;
-            margin: 15px;
-            width: 260px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: #555;
-        }
-
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 15px;
-        }
-    </style>
+    @vite('resources/css/app.css')
 </head>
-<body>
+<body class="bg-gray-100 flex flex-col min-h-screen font-sans text-gray-900">
 
-<header>
-    <h1>Student Grievance Portal</h1>
-    <p>Raise your concerns easily & track them</p>
-</header>
+    <header class="bg-slate-800 text-white py-8 text-center shadow-md">
+        <h1 class="text-3xl font-bold mb-2">Student Grievance Portal</h1>
+        <p class="text-slate-300 text-sm">Raise your concerns easily & track them</p>
+    </header>
 
-<div class="hero">
-    <h2>Welcome to Student Support System</h2>
-    <p>Fast, Transparent & Efficient Grievance Handling</p>
-</div>
+    <main class="flex-grow flex flex-col items-center justify-center p-6 text-center">
+        <div class="max-w-2xl bg-white p-10 rounded-lg shadow-md border border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome to the Support System</h2>
+            <p class="text-gray-600 mb-8">
+                Fast, Transparent & Efficient Grievance Handling. This platform allows students to submit complaints regarding academics, facilities, or administration and track their status.
+            </p>
 
-<main class="container">
-    <h2>Welcome to the Portal</h2>
-    <p>
-        This platform allows students to submit complaints regarding academics,
-        facilities, or administration and track their status.
-    </p>
+            <div class="flex justify-center space-x-4">
+                <a href="{{ route('login') }}" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                    Login
+                </a>
+                <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                    Register
+                </a>
+            </div>
+        </div>
+    </main>
 
-
-    <a href="/login" class="btn">Login</a>
-    <a href="/register" class="btn">Register</a>
-</main>
-
-<footer>
-    <p>© 2026 Mizoram University | Email: support@mzu.edu.in</p>
-</footer>
+    <footer class="bg-slate-800 text-white text-center py-4 text-sm mt-auto">
+        <p>© 2026 Mizoram University | Email: support@mzu.edu.in</p>
+    </footer>
 
 </body>
 </html>
