@@ -106,7 +106,6 @@
     <p>Fast, Transparent & Efficient Grievance Handling</p>
 </div>
 
-<<<<<<< HEAD
 <main class="container">
     <h2>Welcome to the Portal</h2>
     <p>
@@ -118,21 +117,6 @@
     <a href="/login" class="btn">Login</a>
     <a href="/register" class="btn">Register</a>
 </main>
-=======
-<div class="cards">
-    <div class="card">
-        <h3>Submit Your Complaint</h3>
-        <p>New user? Register first to raise a grievance.</p>
-        <a href="/register" class="btn">Register</a>
-    </div>
-
-    <div class="card">
-        <h3>Track Your Complaint</h3>
-        <p>Already registered? Login to check your complaint status.</p>
-        <a href="/login" class="btn">Login</a>
-    </div>
-</div>
->>>>>>> 2d809f1a9042a2f2d501e0cd1003d1165b1e6a41
 
 <footer>
     <p>© 2026 Mizoram University | Email: support@mzu.edu.in</p>
