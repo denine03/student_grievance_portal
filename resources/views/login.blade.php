@@ -10,23 +10,20 @@
 
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         
-        <!-- Header -->
         <div class="mb-8 text-center">
             <h2 class="text-2xl font-bold text-gray-800">Grievance Portal</h2>
             <p class="text-sm text-gray-600 mt-2">Sign in with your university email</p>
         </div>
 
-        <!-- Global Error Message -->
         @if ($errors->has('login_error'))
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm text-center">
                 {{ $errors->first('login_error') }}
             </div>
         @endif
 
-        <form method="POST" action="{{ url('/login') }}" class="space-y-6">
+        <form method="POST" action="{{ route('login') }}" class="space-y-6">
             @csrf
 
-            <!-- Email Field -->
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">University Email</label>
                 <div class="mt-1">
@@ -39,7 +36,6 @@
                 @enderror
             </div>
 
-            <!-- Password Field -->
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <div class="mt-1">
@@ -52,7 +48,6 @@
                 @enderror
             </div>
 
-            <!-- Remember Me & Forgot Password -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <input id="remember" name="remember" type="checkbox" 
@@ -70,7 +65,6 @@
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <div>
                 <button type="submit" 
                     class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">

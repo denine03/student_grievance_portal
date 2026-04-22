@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Grievance Portal</title>
 
     <style>
@@ -77,7 +78,7 @@
     <a href="/grievance">Submit Grievance</a>
 </nav>
 
-<div class="container">
+<main class="container">
     <h2>Welcome to the Portal</h2>
     <p>
         This platform allows students to submit complaints regarding academics,
@@ -87,7 +88,7 @@
 
     <a href="/login" class="btn">Login</a>
     <a href="/register" class="btn">Register</a>
-</div>
+</main>
 
 <footer>
     <p>Student Grievance Portal</p>
