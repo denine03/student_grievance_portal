@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController; // Import the controller
 
 Route::get('/', function () {
     return view('homepage');
@@ -12,4 +13,7 @@ Route::get('/login', function () {
 
 Route::get('/register', function () {
     return view('register');
-})->name('register');
+})->name('register.form'); // Renamed slightly to avoid conflict with the POST route
+
+// --- The New Form Submission Route ---
+Route::post('/register', [AuthController::class, 'registerSubmit'])->name('register');
