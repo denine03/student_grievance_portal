@@ -21,7 +21,7 @@
     <div class="max-w-6xl mx-auto mt-10 p-6">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800">My Grievances</h2>
-            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm">
+            <a href="{{ route('grievance.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm">
                 + Submit New Grievance
             </a>
         </div>
