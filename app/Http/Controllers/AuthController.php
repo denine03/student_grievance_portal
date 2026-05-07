@@ -50,12 +50,23 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Redirect based on role (using the helper method we added to the User model!)
+            // The Traffic Director Logic
+            $userRole = Auth::user()->role;
+
+            // Tier 1: Students
             if (Auth::user()->isStudent()) {
                 return redirect()->route('student.dashboard');
+            } 
+            // Tier 2: Authorities (HOD, Dean, DSW)
+            elseif (Auth::user()->isFaculty()) {
+                return redirect()->route('authority.dashboard'); 
+            } 
+            // Tier 3: Admins (Registrar, Devs, VC)
+            elseif (Auth::user()->isAdmin()) {
+                return redirect()->route('admin.dashboard'); 
             }
 
-            // Fallback for admins/faculty (we will build their dashboards later)
+            // Fallback just in case
             return redirect('/');
         }
 
@@ -64,7 +75,7 @@ class AuthController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
-
+    
     // --- 3. LOGOUT METHOD (Add this!) ---
     public function logout(Request $request)
     {
