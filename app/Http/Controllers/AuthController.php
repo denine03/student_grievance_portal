@@ -35,6 +35,31 @@ class AuthController extends Controller
         return redirect()->route('student.dashboard')->with('success', 'Registration successful!');
     }
 
+    public function registerStaffSubmit(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'min:8'],
+            'role' => ['required', 'in:hod,dean,dsw_head'], 
+            'department' => ['required', 'string'],
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+            'department' => $validated['department'],
+            'student_id' => null, 
+            'school' => null,     
+        ]);
+
+        Auth::login($user);
+        
+        return redirect()->route('authority.dashboard')->with('success', 'Staff account created successfully!');
+    }
+
     public function loginSubmit(Request $request)
     {
         $credentials = $request->validate([

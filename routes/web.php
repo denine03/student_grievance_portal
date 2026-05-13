@@ -31,12 +31,20 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/student/grievance/new', [GrievanceController::class, 'create'])->name('grievance.create');
     Route::post('/student/grievance', [GrievanceController::class, 'store'])->name('grievance.store');
+
+    Route::get('/staff/register', function () {
+        return view('staff.register');
+    })->name('staff.register.form');
+    Route::post('/staff/register', [AuthController::class, 'registerStaffSubmit'])->name('staff.register');
 });
 
 Route::middleware(['auth'])->prefix('authority')->group(function () {
     Route::get('/dashboard', function () {
+        $grievances = Grievance::latest()->get();
         return view('authority.dashboard');
     })->name('authority.dashboard');
+
+    Route::patch('/grievance/{grievance}/status', [GrievanceController::class, 'updateStatus'])->name('authority.grievance.update');
 });
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
