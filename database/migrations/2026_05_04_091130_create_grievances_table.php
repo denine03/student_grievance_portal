@@ -15,18 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('users')->onDelete('cascade');
             
-            // Routing & Assignment
-            $table->string('category'); // e.g., Academic, Hostel, Finance
+            $table->string('category');
             $table->foreignId('assigned_to_id')->nullable()->constrained('users')->onDelete('set null');
             $table->boolean('is_emergency')->default(false);
             
-            // The Content
             $table->string('subject');
             $table->text('description');
-            $table->string('attachment_path')->nullable(); // For file uploads
+            $table->string('attachment_path')->nullable();
             
-            // Status tracking
-            $table->enum('status', ['pending', 'in_progress', 'resolved', 'closed'])->default('pending');
+            $table->enum('status', ['pending', 'under_review', 'resolved', 'rejected'])->default('pending');
             
             $table->timestamps();
         });
