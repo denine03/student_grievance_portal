@@ -21,7 +21,8 @@ class GrievanceController extends Controller
             'subject' => 'required|string|max:255',
             'description' => 'required|string',
             'attachment' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:2048',
-            'is_emergency' => 'nullable|boolean'
+            'is_emergency' => 'nullable|boolean',
+            'is_anonymous' => 'nullable|boolean'
         ]);
 
         $filePath = null;
@@ -29,13 +30,14 @@ class GrievanceController extends Controller
             $filePath = $request->file('attachment')->store('attachments', 'public');
         }
 
-        $grievance = Grievance::create([
+        Grievance::create([
             'student_id' => Auth::id(),
             'category' => $validated['category'],
             'subject' => $validated['subject'],
             'description' => $validated['description'],
             'attachment_path' => $filePath,
             'is_emergency' => $request->has('is_emergency'),
+            'is_anonymous' => $request->has('is_anonymous'),
             'status' => 'pending'
         ]);
 

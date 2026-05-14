@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Grievance;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -19,7 +20,7 @@ class GrievanceStatusUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Grievance $grievance)
     {
         $this->grievance = $grievance;
     }
@@ -31,6 +32,6 @@ class GrievanceStatusUpdated implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return new PrivateChannel('student.' . $this->grievance->user_id);
+        return new PrivateChannel('student.' . $this->grievance->student_id);
     }
 }

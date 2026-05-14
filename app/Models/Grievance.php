@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Grievance extends Model
 {
-    protected $fillable = [
-    'student_id', 'category', 'assigned_to_id', 'is_emergency', 
-    'subject', 'description', 'attachment_path', 'status',
-    ];
+    use HasFactory;
+
+    protected $guarded = [];
 
     public function student() {
         return $this->belongsTo(User::class, 'student_id');
