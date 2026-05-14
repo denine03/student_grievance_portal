@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Grievance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\GrievanceStatusUpdated;
 
 class GrievanceController extends Controller
 {
@@ -28,7 +29,7 @@ class GrievanceController extends Controller
             $filePath = $request->file('attachment')->store('attachments', 'public');
         }
 
-        Grievance::create([
+        $grievance = Grievance::create([
             'student_id' => Auth::id(),
             'category' => $validated['category'],
             'subject' => $validated['subject'],
@@ -37,10 +38,20 @@ class GrievanceController extends Controller
             'is_emergency' => $request->has('is_emergency'),
             'status' => 'pending'
         ]);
-        
-        $grievance->update(['status' => 'resolved']);
-        GrievanceStatusUpdated::dispatch($grievance);
 
         return redirect()->route('student.dashboard')->with('success', 'Your grievance has been submitted successfully.');
+    }
+
+    public function updateStatus(Request $request, Grievance $grievance)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,in_progress,resolved,closed'
+        ]);
+
+        $grievance->update(['status' => $validated['status']]);
+        
+        GrievanceStatusUpdated::dispatch($grievance);
+
+        return back()->with('success', 'Grievance status updated to ' . str_replace('_', ' ', $validated['status']));
     }
 }

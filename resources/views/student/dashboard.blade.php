@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    @vite('resources/css/app.css') </head>
+    @vite(['resources/css/app.css', 'resources/js/app.js']) 
+</head>
 <body class="bg-gray-100 antialiased font-sans text-gray-900">
 
     <nav class="bg-slate-800 text-white p-4 shadow-md flex justify-between items-center">
@@ -40,7 +41,7 @@
                             <h3 class="text-lg font-bold text-gray-800">{{ $grievance->subject }}</h3>
                         </div>
                         
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full 
+                        <span id="status-badge-{{ $grievance->id }}" class="px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300
                             {{ $grievance->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
                             {{ $grievance->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : '' }}
                             {{ $grievance->status === 'resolved' ? 'bg-green-100 text-green-800' : '' }}
@@ -63,5 +64,36 @@
         </div>
     </div>
 
+    <script type="module">
+        const userId = {{ Auth::user()->id }};
+
+        window.Echo.private(`student.${userId}`)
+            .listen('GrievanceStatusUpdated', (event) => {
+                
+                const badge = document.getElementById(`status-badge-${event.grievance.id}`);
+                
+                if (badge) {
+                    let statusText = event.grievance.status.replace('_', ' ');
+                    badge.innerText = statusText.charAt(0).toUpperCase() + statusText.slice(1);
+                    
+                    badge.className = 'px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ';
+                    
+                    switch(event.grievance.status) {
+                        case 'pending':
+                            badge.className += 'bg-yellow-100 text-yellow-800';
+                            break;
+                        case 'in_progress':
+                            badge.className += 'bg-blue-100 text-blue-800';
+                            break;
+                        case 'resolved':
+                            badge.className += 'bg-green-100 text-green-800';
+                            break;
+                        case 'closed':
+                            badge.className += 'bg-gray-100 text-gray-800';
+                            break;
+                    }
+                }
+            });
+    </script>
 </body>
 </html>
