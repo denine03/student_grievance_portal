@@ -4,220 +4,258 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authority Dashboard - MZU Portal</title>
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 antialiased font-sans text-gray-900 flex flex-col min-h-screen">
+<body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 flex flex-col min-h-screen">
 
-    <nav class="bg-teal-800 text-white p-4 shadow-md flex justify-between items-center z-10 relative">
-        <div class="flex items-center gap-4">
-            <h1 class="text-xl font-bold border-r pr-4 border-teal-600">MZU Staff Portal</h1>
-            <span class="text-sm text-teal-200">Department Overview</span>
-        </div>
-        <div class="flex items-center gap-4">
-            <span class="font-semibold">{{ Auth::user()->name }} ({{ strtoupper(Auth::user()->role) }})</span>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm font-bold transition shadow-sm">Logout</button>
-            </form>
+    <nav class="sticky top-0 z-40 w-full bg-emerald-900 border-b border-emerald-800 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 border-r border-emerald-800 pr-4">
+                        <div class="w-8 h-8 bg-emerald-700 rounded-lg flex items-center justify-center shadow-inner shadow-emerald-950/30">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        </div>
+                        <h1 class="text-xl font-extrabold tracking-tight text-white uppercase">MZU <span class="text-emerald-400 font-medium">Staff</span></h1>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-300 hidden md:block">Authority Console</span>
+                </div>
+                <div class="flex items-center gap-5">
+                    <span class="text-sm font-semibold text-emerald-100 hidden sm:block">{{ Auth::user()->name }} ({{ strtoupper(Auth::user()->role) }})</span>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="text-sm font-bold text-emerald-200 hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-800">Logout</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto mt-8 p-6 w-full flex-grow">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Department Action Queue</h2>
+    <main class="max-w-6xl mx-auto mt-10 p-6 w-full flex-grow">
+        <div class="mb-10">
+            <h2 class="text-3xl font-black text-slate-900 tracking-tight">Department Action Queue</h2>
+            <p class="text-slate-500 mt-1.5 text-sm">Review and manage student grievances assigned to your department.</p>
         </div>
 
         @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 shadow-sm">
-                {{ session('success') }}
+            <div class="bg-emerald-50/80 backdrop-blur-sm border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8 shadow-sm flex items-center gap-3 animate-[fadeIn_0.5s_ease-out]">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="font-medium text-sm">{{ session('success') }}</span>
             </div>
         @endif
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             
-            <div class="bg-white rounded-xl shadow-sm border border-red-100 p-6 flex items-center justify-between hover:shadow-md transition">
+            <div class="group bg-white rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-red-100 transition-all duration-300 flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Action Required</p>
-                    <h3 class="text-3xl font-black text-gray-800">{{ $pendingCount }}</h3>
-                    <p class="text-xs text-red-500 mt-1 font-semibold">Pending Review</p>
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Action Required</p>
+                    <h3 class="text-3xl font-black text-slate-900">{{ $pendingCount }}</h3>
+                    <p class="text-xs text-red-500 mt-1.5 font-bold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Pending Review
+                    </p>
                 </div>
-                <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-6 flex items-center justify-between hover:shadow-md transition">
+            <div class="group bg-white rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-teal-100 transition-all duration-300 flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Active Cases</p>
-                    <h3 class="text-3xl font-black text-gray-800">{{ $inProgressCount }}</h3>
-                    <p class="text-xs text-blue-500 mt-1 font-semibold">In Progress</p>
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Active Cases</p>
+                    <h3 class="text-3xl font-black text-slate-900">{{ $inProgressCount }}</h3>
+                    <p class="text-xs text-teal-600 mt-1.5 font-bold">Currently Processing</p>
                 </div>
-                <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-green-100 p-6 flex items-center justify-between hover:shadow-md transition">
+            <div class="group bg-white rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-emerald-100 transition-all duration-300 flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Total Resolved</p>
-                    <h3 class="text-3xl font-black text-gray-800">{{ $resolvedCount }}</h3>
-                    <p class="text-xs text-green-500 mt-1 font-semibold">Cases Closed</p>
+                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Total Resolved</p>
+                    <h3 class="text-3xl font-black text-slate-900">{{ $resolvedCount }}</h3>
+                    <p class="text-xs text-emerald-600 mt-1.5 font-bold">Successfully Closed</p>
                 </div>
-                <div class="w-14 h-14 bg-green-50 text-green-600 rounded-full flex items-center justify-center">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
             </div>
 
         </div>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="space-y-5">
             @forelse ($grievances as $grievance)
-                <div class="p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition flex justify-between items-center">
-                    
-                    <div class="w-2/3">
-                        <span class="text-xs font-bold uppercase tracking-wider text-teal-600 mb-1 block">
-                            {{ $grievance->category }}
-                            @if($grievance->is_emergency)
-                                <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded ml-2 animate-pulse">● URGENT</span>
-                            @endif
-                            @if($grievance->is_anonymous)
-                                <span class="bg-slate-800 text-white px-2 py-0.5 rounded ml-2">ANONYMOUS</span>
-                            @endif
-                        </span>
+                <div class="group bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-emerald-200 transition-all duration-300 overflow-hidden">
+                    <div class="p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                         
-                        <h3 class="text-lg font-bold text-gray-800">{{ $grievance->subject }}</h3>
-                        <p class="text-gray-600 text-sm mt-2">{{ Str::limit($grievance->description, 100) }}</p>
-                        
-                        <div class="mt-3">
-                            @if($grievance->is_anonymous)
-                                <p class="text-xs text-gray-500 italic flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                                    Identity protected at student's request | Submitted: {{ $grievance->created_at->format('M d, Y') }}
-                                </p>
-                            @else
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Submitted by: <span class="font-semibold text-gray-600">{{ $grievance->student->name ?? 'Student ID: ' . $grievance->student_id }}</span> | 
-                                    Submitted: {{ $grievance->created_at->format('M d, Y') }}
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="w-1/3 flex flex-col items-end gap-3">
-                        <button onclick="openModal('{{ $grievance->id }}')" class="text-teal-600 hover:text-teal-800 font-bold text-sm flex items-center gap-1 transition focus:outline-none">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            Review Full Case
-                        </button>
-
-                        <form action="{{ route('authority.grievance.update', $grievance->id) }}" method="POST" class="flex items-center gap-2">
-                            @csrf
-                            @method('PATCH')
-                            
-                            <select name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-teal-500 focus:border-teal-500 block p-2">
-                                <option value="pending" {{ $grievance->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="in_progress" {{ $grievance->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="resolved" {{ $grievance->status == 'resolved' ? 'selected' : '' }}>Resolved</option>
-                                <option value="closed" {{ $grievance->status == 'closed' ? 'selected' : '' }}>Closed</option>
-                            </select>
-
-                            <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded text-sm font-semibold transition">
-                                Update
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-
-                <div id="modal-{{ $grievance->id }}" class="hidden fixed inset-0 z-50 items-center justify-center bg-slate-900 bg-opacity-60 backdrop-blur-sm p-4 transition-opacity duration-300">
-                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transform transition-transform scale-100">
-                        
-                        <div class="bg-slate-50 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-                            <div>
-                                <h3 class="text-xl font-extrabold text-gray-800">Case #{{ $grievance->id }} Details</h3>
-                                <span class="text-sm text-teal-600 font-semibold">{{ $grievance->category }}</span>
-                            </div>
-                            <button onclick="closeModal('{{ $grievance->id }}')" class="text-gray-400 hover:text-red-500 transition focus:outline-none">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                        
-                        <div class="p-6 overflow-y-auto">
-                            
-                            <div class="mb-5">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Subject</h4>
-                                <p class="text-gray-900 font-bold text-lg">{{ $grievance->subject }}</p>
-                            </div>
-
-                            <div class="mb-6">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Detailed Description</h4>
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-gray-700 whitespace-pre-wrap leading-relaxed break-words">{{ $grievance->description }}</div>
-                            </div>
-
-                            <div class="mt-6 pt-6 border-t border-gray-100">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Attached Evidence</h4>
-                                
-                                @if($grievance->attachment_path)
-                                    <button onclick="toggleAttachment('{{ $grievance->id }}')" id="btn-attach-{{ $grievance->id }}" class="inline-flex items-center gap-2 bg-white border border-gray-300 px-4 py-2.5 rounded-lg text-sm font-bold text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition shadow-sm focus:outline-none">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                        <span>Show Attached File</span>
-                                    </button>
-
-                                    <div id="viewer-{{ $grievance->id }}" class="hidden mt-4 border border-gray-200 rounded-lg bg-gray-100 p-2 h-96 shadow-inner">
-                                        <iframe src="{{ asset('storage/' . $grievance->attachment_path) }}" class="w-full h-full rounded border border-gray-300 bg-white"></iframe>
-                                    </div>
-                                @else
-                                    <div class="bg-gray-50 px-4 py-3 rounded-lg border border-gray-100 border-dashed">
-                                        <p class="text-sm text-gray-400 italic flex items-center gap-2">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                            No evidence was uploaded for this case.
-                                        </p>
-                                    </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="flex items-center flex-wrap gap-2">
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700/80 bg-emerald-50 px-2.5 py-1 rounded-md">
+                                    {{ $grievance->category }}
+                                </span>
+                                @if($grievance->is_emergency)
+                                    <span class="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-red-600 bg-red-50 px-2.5 py-1 rounded-md">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> URGENT
+                                    </span>
+                                @endif
+                                @if($grievance->is_anonymous)
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-white bg-slate-800 px-2.5 py-1 rounded-md flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                        Anonymous
+                                    </span>
                                 @endif
                             </div>
+                            
+                            <h3 class="text-xl font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors">{{ $grievance->subject }}</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed line-clamp-1 max-w-2xl">{{ $grievance->description }}</p>
+                            
+                            <div class="flex items-center gap-3 pt-2">
+                                @if($grievance->is_anonymous)
+                                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Identity Protected • {{ $grievance->created_at->format('M d, Y') }}</p>
+                                @else
+                                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">
+                                        Student: <span class="text-slate-600 underline decoration-emerald-200">{{ $grievance->student->name ?? 'ID: '.$grievance->student_id }}</span> • {{ $grievance->created_at->format('M d, Y') }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
 
+                        <div class="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end gap-4 w-full md:w-auto shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-5 md:pt-0 md:pl-8">
+                            <button onclick="openModal('{{ $grievance->id }}')" class="group/btn text-emerald-700 hover:text-emerald-900 font-extrabold text-sm flex items-center gap-2 transition-all focus:outline-none">
+                                <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center group-hover/btn:bg-emerald-100 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                </div>
+                                Review Case
+                            </button>
+
+                            <form action="{{ route('authority.grievance.update', $grievance->id) }}" method="POST" class="flex items-center gap-2 w-full sm:w-auto">
+                                @csrf
+                                @method('PATCH')
+                                
+                                <select name="status" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 transition-all outline-none">
+                                    <option value="pending" {{ $grievance->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="in_progress" {{ $grievance->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                                    <option value="resolved" {{ $grievance->status == 'resolved' ? 'selected' : '' }}>Resolved</option>
+                                    <option value="closed" {{ $grievance->status == 'closed' ? 'selected' : '' }}>Closed</option>
+                                </select>
+
+                                <button type="submit" class="bg-emerald-800 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-black transition-all shadow-sm">
+                                    UPDATE
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-{{ $grievance->id }}" class="hidden fixed inset-0 z-50 items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 transition-all duration-300 opacity-0">
+                    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transform scale-95 transition-all duration-300">
+                        
+                        <div class="bg-slate-50 border-b border-slate-100 px-8 py-5 flex justify-between items-center shrink-0">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-700">
+                                    <span class="font-black text-xs">#{{ $grievance->id }}</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 tracking-tight">Grievance Report</h3>
+                                    <span class="text-[10px] uppercase font-extrabold tracking-widest text-emerald-600">{{ $grievance->category }}</span>
+                                </div>
+                            </div>
+                            <button onclick="closeModal('{{ $grievance->id }}')" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <div class="p-8 overflow-y-auto no-scrollbar">
+                            <div class="space-y-8">
+                                <div>
+                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Subject</h4>
+                                    <p class="text-xl font-bold text-slate-800 leading-snug">{{ $grievance->subject }}</p>
+                                </div>
+
+                                <div>
+                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">Case Description</h4>
+                                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-slate-700 text-sm leading-relaxed whitespace-pre-wrap italic">"{{ $grievance->description }}"</div>
+                                </div>
+
+                                <div class="pt-6 border-t border-slate-100">
+                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4">Evidence & Artifacts</h4>
+                                    
+                                    @if($grievance->attachment_path)
+                                        <button onclick="toggleAttachment('{{ $grievance->id }}')" id="btn-attach-{{ $grievance->id }}" class="group flex items-center gap-3 bg-white border border-slate-200 px-5 py-3 rounded-xl text-sm font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all shadow-sm focus:outline-none">
+                                            <svg class="w-5 h-5 text-slate-400 group-hover:text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                            <span>Show Attached Evidence</span>
+                                        </button>
+
+                                        <div id="viewer-{{ $grievance->id }}" class="hidden mt-4 border border-slate-200 rounded-2xl bg-white p-2 h-[400px] shadow-inner overflow-hidden">
+                                            <iframe src="{{ route('grievance.attachment', $grievance->id) }}" class="w-full h-full rounded-xl border-0"></iframe>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center gap-3 text-slate-400 py-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <p class="text-sm italic">No supporting evidence was provided for this case.</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
             @empty
-                <div class="p-10 text-center">
-                    <p class="text-gray-500">Your queue is empty. No pending grievances require your attention.</p>
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-16 flex flex-col items-center justify-center text-center">
+                    <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Queue is Empty</h3>
+                    <p class="text-slate-500 text-sm max-w-sm">There are no pending grievances in your department that require review at this time.</p>
                 </div>
             @endforelse
         </div>
     </main>
 
-    <footer class="bg-teal-800 text-center text-teal-200 p-4 text-sm mt-auto">
-        &copy; 2026 Mizoram University - Authority Console
+    <footer class="bg-white border-t border-slate-100 text-center text-slate-400 p-6 text-xs mt-auto">
+        &copy; 2026 Mizoram University • Institutional Authority Management Console
     </footer>
 
     <script>
-        // Modal logic
         function openModal(id) {
             const modal = document.getElementById('modal-' + id);
+            const content = modal.querySelector('.max-w-2xl');
+            
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            
+            requestAnimationFrame(() => {
+                modal.classList.add('opacity-100');
+                content.classList.add('scale-100');
+            });
+            
             document.body.classList.add('overflow-hidden');
         }
 
         function closeModal(id) {
             const modal = document.getElementById('modal-' + id);
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.classList.remove('overflow-hidden');
+            const content = modal.querySelector('.max-w-2xl');
             
-            const viewer = document.getElementById('viewer-' + id);
-            if(viewer && !viewer.classList.contains('hidden')) {
-                toggleAttachment(id);
-            }
+            modal.classList.remove('opacity-100');
+            content.classList.remove('scale-100');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+                
+                const viewer = document.getElementById('viewer-' + id);
+                if(viewer && !viewer.classList.contains('hidden')) {
+                    toggleAttachment(id);
+                }
+            }, 300);
         }
 
         window.onclick = function(event) {
             if (event.target.id.startsWith('modal-')) {
-                event.target.classList.add('hidden');
-                event.target.classList.remove('flex');
-                document.body.classList.remove('overflow-hidden');
+                const id = event.target.id.replace('modal-', '');
+                closeModal(id);
             }
         }
 
@@ -227,10 +265,10 @@
 
             if (viewer.classList.contains('hidden')) {
                 viewer.classList.remove('hidden');
-                btnSpan.innerText = 'Hide Attached File';
+                btnSpan.innerText = 'Hide Attached Evidence';
             } else {
                 viewer.classList.add('hidden');
-                btnSpan.innerText = 'Show Attached File';
+                btnSpan.innerText = 'Show Attached Evidence';
             }
         }
     </script>

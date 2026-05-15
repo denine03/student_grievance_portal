@@ -18,4 +18,8 @@ class Grievance extends Model
     public function assignedTo() {
         return $this->belongsTo(User::class, 'assigned_to_id');
     }
+
+    public function comments() {
+        return $this->hasMany(GrievanceComment::class)->latest();
+    }
 }

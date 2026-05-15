@@ -6,102 +6,266 @@
     <title>Student Dashboard - MZU</title>
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
 </head>
-<body class="bg-slate-50 antialiased font-sans text-gray-900">
+<body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
 
-    <nav class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-wide">MZU Grievance Portal</h1>
-        <div class="flex items-center gap-6">
-            <span class="font-medium">Welcome, {{ Auth::user()->name }}</span>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm font-bold transition shadow-sm">Logout</button>
-            </form>
+    <nav class="sticky top-0 z-40 w-full bg-emerald-900 border-b border-emerald-800 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-emerald-700 rounded-lg flex items-center justify-center shadow-inner shadow-emerald-950/30">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-white">MZU <span class="text-emerald-400 font-medium">Grievance Portal</span></h1>
+                </div>
+                <div class="flex items-center gap-5">
+                    <span class="text-sm font-semibold text-emerald-100 hidden sm:block">Welcome, {{ Auth::user()->name }}</span>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="text-sm font-bold text-emerald-200 hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-800">Logout</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <div class="max-w-5xl mx-auto mt-10 p-6">
-        <div class="flex justify-between items-center mb-8 border-b pb-4">
+    <main class="max-w-4xl mx-auto mt-10 p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
             <div>
-                <h2 class="text-3xl font-extrabold text-gray-800">My Grievances</h2>
-                <p class="text-gray-500 mt-1">Track the real-time status of your submitted issues.</p>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">My Grievances</h2>
+                <p class="text-slate-500 mt-1.5 text-sm">Track the real-time status of your submitted issues.</p>
             </div>
-            <a href="{{ route('grievance.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition shadow-md transform hover:-translate-y-0.5">
-                + Submit New Grievance
+            <a href="{{ route('grievance.create') }}" class="group relative inline-flex items-center gap-2 bg-emerald-800 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-emerald-700/25 hover:-translate-y-0.5 overflow-hidden">
+                <span class="relative z-10 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    New Grievance
+                </span>
             </a>
         </div>
 
         @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 shadow-sm">
-                {{ session('success') }}
+            <div class="bg-emerald-50/80 backdrop-blur-sm border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8 shadow-sm flex items-center gap-3 animate-[fadeIn_0.5s_ease-out]">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="font-medium text-sm">{{ session('success') }}</span>
             </div>
         @endif
 
-        <div class="space-y-4">
+        <div class="space-y-5">
             @forelse ($grievances as $grievance)
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <span class="text-xs font-black uppercase tracking-wider text-blue-600 mb-1 block">
-                                    {{ $grievance->category }} 
+                <div class="group bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-emerald-200 transition-all duration-300 overflow-hidden">
+                    <div class="p-6 sm:p-7">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700/80 bg-emerald-50 px-2.5 py-1 rounded-md">
+                                        {{ $grievance->category }}
+                                    </span>
                                     @if($grievance->is_emergency)
-                                        <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded ml-2 animate-pulse">● URGENT</span>
+                                        <span class="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-red-600 bg-red-50 px-2.5 py-1 rounded-md">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                            Urgent
+                                        </span>
                                     @endif
-                                </span>
-                                <h3 class="text-xl font-bold text-gray-800">{{ $grievance->subject }}</h3>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors">{{ $grievance->subject }}</h3>
                             </div>
                             
-                            <span id="status-badge-{{ $grievance->id }}" class="px-4 py-1.5 text-sm font-bold rounded-full border transition-colors duration-300
-                                {{ $grievance->status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : '' }}
-                                {{ $grievance->status === 'in_progress' ? 'bg-blue-50 text-blue-700 border-blue-200' : '' }}
-                                {{ $grievance->status === 'resolved' ? 'bg-green-50 text-green-700 border-green-200' : '' }}
-                                {{ $grievance->status === 'closed' ? 'bg-gray-50 text-gray-700 border-gray-200' : '' }}">
+                            <span id="status-badge-{{ $grievance->id }}" class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-colors duration-300
+                                {{ $grievance->status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200/60' : '' }}
+                                {{ $grievance->status === 'in_progress' ? 'bg-teal-50 text-teal-700 border-teal-200/60' : '' }}
+                                {{ $grievance->status === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200/60' : '' }}
+                                {{ $grievance->status === 'closed' ? 'bg-slate-50 text-slate-600 border-slate-200' : '' }}">
+                                @if($grievance->status === 'pending')
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                @elseif($grievance->status === 'in_progress')
+                                    <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+                                @endif
                                 {{ ucfirst(str_replace('_', ' ', $grievance->status)) }}
                             </span>
                         </div>
                         
-                        <p class="text-gray-600 text-base mb-4">{{ Str::limit($grievance->description, 120) }}</p>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-5 line-clamp-2">{{ $grievance->description }}</p>
                         
-                        <div class="flex items-center justify-between text-sm text-gray-500 border-t pt-4">
-                            <span>Ticket #{{ $grievance->id }} • Submitted on {{ $grievance->created_at->format('M d, Y \a\t h:i A') }}</span>
+                        <div class="flex items-center justify-between pt-5 border-t border-slate-100">
+                            <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
+                                <span>#{{ str_pad($grievance->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                <span>{{ $grievance->created_at->format('M d, Y') }}</span>
+                            </div>
                             
-                            <button onclick="toggleDetails('{{ $grievance->id }}')" class="text-blue-600 font-bold hover:underline focus:outline-none">
-                                View Full Details ↓
+                            <button onclick="toggleDetails('{{ $grievance->id }}')" class="text-sm font-bold text-slate-600 hover:text-emerald-700 flex items-center gap-1 transition-colors focus:outline-none">
+                                View Details 
+                                <svg id="icon-{{ $grievance->id }}" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                         </div>
 
-                        <div id="details-{{ $grievance->id }}" class="hidden mt-6 bg-slate-50 p-5 rounded-lg border border-slate-200">
-                            <h4 class="font-bold text-gray-800 mb-2">Full Description:</h4>
-                            <p class="text-gray-700 whitespace-pre-wrap">{{ $grievance->description }}</p>
+                        <div id="details-{{ $grievance->id }}" class="hidden mt-6 bg-slate-50/50 rounded-xl border border-slate-100 p-5 sm:p-6 transition-all">
                             
-                            @if($grievance->attachment_path)
-                                <div class="mt-4 pt-4 border-t border-slate-200">
-                                    <h4 class="font-bold text-gray-800 mb-2">Attached Evidence:</h4>
-                                    <a href="{{ asset('storage/' . $grievance->attachment_path) }}" target="_blank" class="inline-flex items-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded-md text-sm font-semibold text-blue-600 hover:bg-blue-50 transition">
-                                        📄 View File
-                                    </a>
+                            @php
+                                $statusLevel = 1;
+                                if($grievance->status === 'in_progress') $statusLevel = 2;
+                                elseif($grievance->status === 'resolved') $statusLevel = 3;
+                                elseif($grievance->status === 'closed') $statusLevel = 4;
+                                $progressWidth = ($statusLevel - 1) * 33.33;
+                            @endphp
+
+                            <div class="mb-10 pt-2">
+                                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-6 text-center">Live Progress Tracker</h4>
+                                
+                                <div class="relative max-w-2xl mx-auto">
+                                    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full"></div>
+                                    
+                                    <div id="progress-line-{{ $grievance->id }}" class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-emerald-500 rounded-full transition-all duration-700 ease-out" style="width: {{ $progressWidth }}%"></div>
+
+                                    <div class="relative flex justify-between items-center w-full">
+                                        
+                                        <div class="flex flex-col items-center relative">
+                                            <div id="step-1-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 1 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            </div>
+                                            <span id="step-text-1-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 1 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Submitted</span>
+                                        </div>
+
+                                        <div class="flex flex-col items-center relative">
+                                            <div id="step-2-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 2 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                            </div>
+                                            <span id="step-text-2-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 2 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Reviewing</span>
+                                        </div>
+
+                                        <div class="flex flex-col items-center relative">
+                                            <div id="step-3-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 3 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            </div>
+                                            <span id="step-text-3-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 3 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Resolved</span>
+                                        </div>
+
+                                        <div class="flex flex-col items-center relative">
+                                            <div id="step-4-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 4 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                                            </div>
+                                            <span id="step-text-4-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 4 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Closed</span>
+                                        </div>
+                                        
+                                    </div>
                                 </div>
-                            @endif
+                            </div>
+                            <div class="border-t border-slate-200/60 pt-6">
+                                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Complete Report</h4>
+                                <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">{{ $grievance->description }}</p>
+                                
+                                @if($grievance->attachment_path)
+                                    <div class="mt-6 pt-5 border-t border-slate-200/60">
+                                        <button onclick="openEvidenceModal('{{ route('grievance.attachment', $grievance->id) }}')" class="group inline-flex items-center gap-2.5 bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-300 hover:shadow-sm hover:bg-emerald-50/50 transition-all focus:outline-none">
+                                            <svg class="w-5 h-5 text-slate-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                            View Attached Evidence
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="mt-8 border-t border-slate-200/60 pt-6">
+                                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-5">Case Communication</h4>
+                                
+                                <div class="space-y-4 max-h-72 overflow-y-auto pr-2 mb-5 flex flex-col-reverse no-scrollbar">
+                                    @forelse($grievance->comments as $comment)
+                                        @if($comment->user_id === Auth::id())
+                                            <div class="flex justify-end mb-4">
+                                                <div class="bg-emerald-600 text-white p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
+                                                    <p class="text-sm leading-relaxed">{{ $comment->body }}</p>
+                                                    <span class="text-[10px] text-emerald-200 mt-1.5 block text-right font-medium">
+                                                        {{ $comment->created_at->diffForHumans() }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="flex justify-start gap-3 mb-4">
+                                                <div class="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-xs shadow-inner">
+                                                    {{ substr($comment->user->name, 0, 1) }}
+                                                </div>
+                                                <div class="bg-white border border-slate-200/60 text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
+                                                    <p class="text-xs font-extrabold text-slate-800 mb-1">
+                                                        {{ $comment->user->name }} <span class="text-slate-400 font-medium">({{ strtoupper(str_replace('_', ' ', $comment->user->role)) }})</span>
+                                                    </p>
+                                                    <p class="text-sm leading-relaxed">{{ $comment->body }}</p>
+                                                    <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">
+                                                        {{ $comment->created_at->diffForHumans() }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @empty
+                                        <div class="text-center py-6">
+                                            <p class="text-sm text-slate-400 italic">No messages yet. Send a message to the reviewing authority.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+
+                                <form action="{{ route('grievance.comment', $grievance->id) }}" method="POST" class="relative flex items-end gap-2">
+                                    @csrf
+                                    <div class="relative w-full">
+                                        <textarea name="body" rows="2" placeholder="Type your message or provide additional details..." required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none shadow-sm transition-all"></textarea>
+                                    </div>
+                                    <button type="submit" class="shrink-0 bg-emerald-800 hover:bg-emerald-700 text-white h-[46px] px-5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 focus:outline-none mb-1">
+                                        <span class="hidden sm:inline text-sm">Send</span>
+                                        <svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                    <p class="text-gray-500 text-lg mb-4">You haven't submitted any grievances yet.</p>
-                    <a href="{{ route('grievance.create') }}" class="text-blue-600 font-bold hover:underline">File your first grievance</a>
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-16 flex flex-col items-center justify-center text-center">
+                    <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">No grievances found</h3>
+                    <p class="text-slate-500 text-sm mb-8 max-w-sm">You haven't submitted any tickets yet. When you do, you can track their real-time progress right here.</p>
+                    <a href="{{ route('grievance.create') }}" class="bg-emerald-800 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm">
+                        File a New Grievance
+                    </a>
                 </div>
             @endforelse
         </div>
+    </main>
+
+    <div id="evidence-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm transition-opacity duration-300 opacity-0 p-4 sm:p-6">
+        <div id="evidence-modal-content" class="bg-white w-full max-w-5xl h-[90vh] sm:h-[85vh] rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden border border-white/20">
+            
+            <div class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-slate-800 tracking-tight">Secure Document Viewer</h3>
+                </div>
+                
+                <button onclick="closeEvidenceModal()" class="group flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-red-50 transition-colors focus:outline-none">
+                    <svg class="w-4 h-4 text-slate-500 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="flex-1 bg-slate-50/50 p-3 sm:p-5 overflow-hidden">
+                <div class="w-full h-full rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/60 shadow-sm bg-white">
+                    <iframe id="evidence-frame" src="" class="w-full h-full border-0"></iframe>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
+    <div id="toast-container" class="fixed top-5 right-5 z-[120] flex flex-col gap-3 pointer-events-none"></div>
+
     <script>
-        // Simple Vanilla JS to toggle the accordion
         function toggleDetails(id) {
             const detailsDiv = document.getElementById('details-' + id);
+            const icon = document.getElementById('icon-' + id);
+            
             if (detailsDiv.classList.contains('hidden')) {
                 detailsDiv.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
             } else {
                 detailsDiv.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
             }
         }
     </script>
@@ -115,18 +279,154 @@
                 
                 if (badge) {
                     let statusText = event.grievance.status.replace('_', ' ');
-                    badge.innerText = statusText.charAt(0).toUpperCase() + statusText.slice(1);
+                    let formattedText = statusText.charAt(0).toUpperCase() + statusText.slice(1);
                     
-                    badge.className = 'px-4 py-1.5 text-sm font-bold rounded-full border transition-colors duration-300 ';
+                    let innerHTML = '';
+                    let baseClasses = 'shrink-0 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-colors duration-300 ';
                     
                     switch(event.grievance.status) {
-                        case 'pending': badge.className += 'bg-yellow-50 text-yellow-700 border-yellow-200'; break;
-                        case 'in_progress': badge.className += 'bg-blue-50 text-blue-700 border-blue-200'; break;
-                        case 'resolved': badge.className += 'bg-green-50 text-green-700 border-green-200'; break;
-                        case 'closed': badge.className += 'bg-gray-50 text-gray-700 border-gray-200'; break;
+                        case 'pending': 
+                            badge.className = baseClasses + 'bg-amber-50 text-amber-700 border-amber-200/60'; 
+                            innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> ${formattedText}`;
+                            break;
+                        case 'in_progress': 
+                            badge.className = baseClasses + 'bg-teal-50 text-teal-700 border-teal-200/60'; 
+                            innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> ${formattedText}`;
+                            break;
+                        case 'resolved': 
+                            badge.className = baseClasses + 'bg-emerald-50 text-emerald-700 border-emerald-200/60'; 
+                            innerHTML = formattedText;
+                            break;
+                        case 'closed': 
+                            badge.className = baseClasses + 'bg-slate-50 text-slate-600 border-slate-200'; 
+                            innerHTML = formattedText;
+                            break;
                     }
+                    badge.innerHTML = innerHTML;
+
+                    let targetLevel = 1;
+                    if(event.grievance.status === 'in_progress') targetLevel = 2;
+                    else if(event.grievance.status === 'resolved') targetLevel = 3;
+                    else if(event.grievance.status === 'closed') targetLevel = 4;
+
+                    const progressLine = document.getElementById(`progress-line-${event.grievance.id}`);
+                    if(progressLine) {
+                        progressLine.style.width = ((targetLevel - 1) * 33.33) + '%';
+                    }
+
+                    for(let i = 1; i <= 4; i++) {
+                        const stepIcon = document.getElementById(`step-${i}-${event.grievance.id}`);
+                        const stepText = document.getElementById(`step-text-${i}-${event.grievance.id}`);
+                        
+                        if(stepIcon && stepText) {
+                            if(i <= targetLevel) {
+                                stepIcon.className = 'w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 bg-emerald-600 text-white ring-4 ring-emerald-50';
+                                stepText.className = 'absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap font-bold text-emerald-800 transition-colors duration-500';
+                            } else {
+                                stepIcon.className = 'w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 bg-white border-2 border-slate-200 text-slate-300';
+                                stepText.className = 'absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap font-semibold text-slate-400 transition-colors duration-500';
+                            }
+                        }
+                    }
+                    let subjectStr = event.grievance.subject;
+                    if (subjectStr.length > 30) {
+                        subjectStr = subjectStr.substring(0, 30) + '...';
+                    }
+
+                    showToast(
+                        'Status Update', 
+                        `Ticket <strong>#${event.grievance.id}</strong> ("${subjectStr}") is now <strong>${formattedText}</strong>.`
+                    );
                 }
             });
+    </script>
+
+    <script>
+        function openEvidenceModal(url) {
+            const modal = document.getElementById('evidence-modal');
+            const content = document.getElementById('evidence-modal-content');
+            const frame = document.getElementById('evidence-frame');
+
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+            frame.src = url;
+
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; 
+            
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+            
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeEvidenceModal() {
+            const modal = document.getElementById('evidence-modal');
+            const content = document.getElementById('evidence-modal-content');
+            const frame = document.getElementById('evidence-frame');
+
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                frame.src = ''; 
+                document.body.classList.remove('overflow-hidden');
+                document.body.style.paddingRight = '0px';
+            }, 300); 
+        }
+    </script>
+
+    <script>
+        function showToast(title, message) {
+            const container = document.getElementById('toast-container');
+
+            const toast = document.createElement('div');
+            
+            toast.className = 'pointer-events-auto bg-white/95 backdrop-blur-md border-l-4 border-emerald-500 shadow-xl rounded-r-xl p-4 w-80 transform transition-all duration-300 translate-x-full opacity-0 flex items-start gap-3';
+            
+            toast.innerHTML = `
+                <div class="text-emerald-500 mt-0.5 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-sm font-bold text-slate-800">${title}</h4>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">${message}</p>
+                </div>
+                <button onclick="closeToast(this.parentElement)" class="shrink-0 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0');
+                }, 10);
+            });
+
+            setTimeout(() => {
+                closeToast(toast);
+            }, 4500);
+        }
+
+        function closeToast(toastElement) {
+            toastElement.classList.add('translate-x-full', 'opacity-0');
+
+            setTimeout(() => {
+                if (toastElement.parentNode) {
+                    toastElement.parentNode.removeChild(toastElement);
+                }
+            }, 300);
+        }
     </script>
 </body>
 </html>

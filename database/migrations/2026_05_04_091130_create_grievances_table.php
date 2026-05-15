@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('attachment_path')->nullable();
             
-            $table->enum('status', ['pending', 'under_review', 'resolved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'in_progress', 'resolved', 'closed'])->default('pending');
             
             $table->timestamps();
         });

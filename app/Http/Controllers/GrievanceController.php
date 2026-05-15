@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Grievance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Events\GrievanceStatusUpdated;
+use App\Models\Grievance;
 
 class GrievanceController extends Controller
 {
@@ -27,7 +28,7 @@ class GrievanceController extends Controller
 
         $filePath = null;
         if ($request->hasFile('attachment')) {
-            $filePath = $request->file('attachment')->store('attachments', 'public');
+            $filePath = $request->file('attachment')->store('attachments', 'local');
         }
 
         Grievance::create([
@@ -55,5 +56,31 @@ class GrievanceController extends Controller
         GrievanceStatusUpdated::dispatch($grievance);
 
         return back()->with('success', 'Grievance status updated to ' . str_replace('_', ' ', $validated['status']));
+    }
+
+    public function downloadAttachment(Grievance $grievance)
+    {
+        $user = Auth::user();
+        if ($user->role === 'student' && $grievance->student_id !== $user->id) {
+            abort(403, 'Unauthorized access to private evidence.');
+        }
+
+        if (!$grievance->attachment_path || !Storage::disk('local')->exists($grievance->attachment_path)) {
+            abort(404, 'Evidence file not found.');
+        }
+
+        return Storage::disk('local')->response($grievance->attachment_path);
+    }
+
+    public function addComment(Request $request, Grievance $grievance)
+    {
+        $request->validate(['body' => 'required|string|max:1000']);
+
+        $grievance->comments()->create([
+            'user_id' => Auth::id(),
+            'body' => $request->body
+        ]);
+
+        return back()->with('success', 'Message sent successfully.');
     }
 }

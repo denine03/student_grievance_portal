@@ -32,6 +32,8 @@ class GrievanceStatusUpdated implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return new PrivateChannel('student.' . $this->grievance->student_id);
+        return [
+            new PrivateChannel('student.' . $this->grievance->student_id),
+        ];
     }
 }
