@@ -13,7 +13,7 @@ class AuthorityController extends Controller
     /**
      * Display the filtered authority dashboard.
      */
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
 
@@ -36,6 +36,14 @@ class AuthorityController extends Controller
         $pendingCount = (clone $query)->where('status', 'pending')->count();
         $inProgressCount = (clone $query)->where('status', 'in_progress')->count();
         $resolvedCount = (clone $query)->whereIn('status', ['resolved', 'closed'])->count();
+
+        if ($request->filled('status')) {
+            if ($request->status === 'resolved') {
+                $query->whereIn('status', ['resolved', 'closed']);
+            } else {
+                $query->where('status', $request->status);
+            }
+        }
 
         $grievances = $query->get(); 
 
@@ -72,7 +80,14 @@ class AuthorityController extends Controller
             'body' => $request->body
         ]);
 
-        CommentPosted::dispatch($comment);
+        \App\Events\CommentPosted::dispatch($comment);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'comment' => $comment->load('user')
+            ]);
+        }
 
         return back()->with('success', 'Message sent successfully.');
     }

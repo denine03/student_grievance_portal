@@ -8,25 +8,54 @@
 </head>
 <body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 flex flex-col min-h-screen">
 
-    <nav class="sticky top-0 z-40 w-full bg-emerald-900 border-b border-emerald-800 shadow-md">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-3 border-r border-emerald-800 pr-4">
-                        <div class="w-8 h-8 bg-emerald-700 rounded-lg flex items-center justify-center shadow-inner shadow-emerald-950/30">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                        </div>
-                        <h1 class="text-xl font-extrabold tracking-tight text-white uppercase">MZU <span class="text-emerald-400 font-medium">Staff</span></h1>
+    <nav class="sticky top-0 z-40 w-full bg-emerald-950 border-b-2 border-emerald-500/30 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.4)]">
+        <div class="max-w mx-auto px-6 sm:px-10">
+            <div class="flex justify-between items-center h-24"> 
+                
+                <div class="flex items-center gap-6 mr-10">
+                    <div class="relative group">
+                        <div class="absolute -inset-1.5 bg-emerald-400/25 rounded-full blur-md opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" alt="MZU Logo" 
+                             class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
                     </div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-300 hidden md:block">Authority Console</span>
+                    
+                    <div class="flex flex-col">
+                        <h1 class="text-3xl font-black tracking-tighter text-white leading-none">
+                            MIZORAM <span class="text-emerald-400">UNIVERSITY</span>
+                        </h1>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            <span class="h-[1px] w-8 bg-emerald-500/50"></span>
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/90">
+                                Grievance Management System
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-5">
-                    <span class="text-sm font-semibold text-emerald-100 hidden sm:block">{{ Auth::user()->name }} ({{ strtoupper(Auth::user()->role) }})</span>
+
+                <div class="flex items-center gap-4">
+                    
+                    <div class="hidden lg:flex items-center gap-4 bg-white/5 px-5 py-2.5 h-[52px] rounded-xl border border-white/10 backdrop-blur-md shadow-sm">
+                        <div class="flex flex-col items-end">
+                            <span class="text-3x1 font-bold text-white leading-none tracking-tight">{{ Auth::user()->name }}</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 text-emerald-950 flex items-center justify-center text-sm font-black shadow-lg">
+                            {{ substr(Auth::user()->name, 0, 1) }}
+                        </div>
+                    </div>
+
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="text-sm font-bold text-emerald-200 hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-800">Logout</button>
+                        <button type="submit" class="group flex items-center gap-3 bg-red-500/10 hover:bg-red-600 border border-red-500/20 hover:border-red-500 px-5 py-2.5 h-[52px] rounded-xl transition-all shadow-lg active:scale-95 focus:outline-none">
+                            <span class="text-xs font-black text-white capitalize tracking-widest group-hover:text-white">Logout</span>
+                            <div class="w-8 h-8 rounded-lg bg-red-500/20 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4 text-red-500 group-hover:text-white transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                            </div>
+                        </button>
                     </form>
                 </div>
+
             </div>
         </div>
     </nav>
@@ -38,15 +67,20 @@
         </div>
 
         @if(session('success'))
-            <div class="bg-emerald-50/80 backdrop-blur-sm border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8 shadow-sm flex items-center gap-3 animate-[fadeIn_0.5s_ease-out]">
-                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span class="font-medium text-sm">{{ session('success') }}</span>
+            <div id="success-alert" class="bg-emerald-50/80 backdrop-blur-sm border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8 shadow-sm flex items-center justify-between animate-[fadeIn_0.5s_ease-out] transition-all duration-500">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="font-medium text-sm">{{ session('success') }}</span>
+                </div>
+                <button onclick="document.getElementById('success-alert').remove()" class="text-emerald-400 hover:text-emerald-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
         @endif
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             
-            <div class="group bg-white rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-red-100 transition-all duration-300 flex items-center justify-between">
+            <a href="{{ route('authority.dashboard', ['status' => 'pending']) }}" class="group rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border transition-all duration-300 flex items-center justify-between cursor-pointer focus:outline-none {{ request('status') === 'pending' ? 'bg-red-50/30 border-red-400 ring-1 ring-red-400' : 'bg-white border-slate-100 hover:border-red-100' }}">
                 <div>
                     <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Action Required</p>
                     <h3 class="text-3xl font-black text-slate-900">{{ $pendingCount }}</h3>
@@ -57,9 +91,9 @@
                 <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
-            </div>
+            </a>
 
-            <div class="group bg-white rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-teal-100 transition-all duration-300 flex items-center justify-between">
+            <a href="{{ route('authority.dashboard', ['status' => 'in_progress']) }}" class="group rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border transition-all duration-300 flex items-center justify-between cursor-pointer focus:outline-none {{ request('status') === 'in_progress' ? 'bg-teal-50/30 border-teal-500 ring-1 ring-teal-500' : 'bg-white border-slate-100 hover:border-teal-100' }}">
                 <div>
                     <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Active Cases</p>
                     <h3 class="text-3xl font-black text-slate-900">{{ $inProgressCount }}</h3>
@@ -68,9 +102,9 @@
                 <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 </div>
-            </div>
+            </a>
 
-            <div class="group bg-white rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-emerald-100 transition-all duration-300 flex items-center justify-between">
+            <a href="{{ route('authority.dashboard', ['status' => 'resolved']) }}" class="group rounded-2xl p-7 shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border transition-all duration-300 flex items-center justify-between cursor-pointer focus:outline-none {{ request('status') === 'resolved' ? 'bg-emerald-50/30 border-emerald-500 ring-1 ring-emerald-500' : 'bg-white border-slate-100 hover:border-emerald-100' }}">
                 <div>
                     <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Total Resolved</p>
                     <h3 class="text-3xl font-black text-slate-900">{{ $resolvedCount }}</h3>
@@ -79,9 +113,18 @@
                 <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-            </div>
+            </a>
 
         </div>
+
+        @if(request()->filled('status'))
+            <div class="flex justify-end mb-8">
+                <a href="{{ route('authority.dashboard') }}" class="text-xs font-bold bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2.5 rounded-lg transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    Clear Filter (Viewing {{ ucfirst(str_replace('_', ' ', request('status'))) }})
+                </a>
+            </div>
+        @endif
 
         <div class="space-y-5">
             @forelse ($grievances as $grievance)
@@ -187,7 +230,7 @@
                                         </button>
 
                                         <div id="viewer-{{ $grievance->id }}" class="hidden mt-4 border border-slate-200 rounded-2xl bg-white p-2 h-[400px] shadow-inner overflow-hidden">
-                                            <iframe src="{{ route('grievance.attachment', $grievance->id) }}" class="w-full h-full rounded-xl border-0"></iframe>
+                                            <iframe loading="lazy" src="{{ route('grievance.attachment', $grievance->id) }}" class="w-full h-full rounded-xl border-0"></iframe>
                                         </div>
                                     @else
                                         <div class="flex items-center gap-3 text-slate-400 py-2">
@@ -234,8 +277,11 @@
                                             </div>
                                         @endforelse
                                     </div>
-
-                                    <form action="{{ route('authority.comment', $grievance->id) }}" method="POST" class="relative flex items-end gap-2">
+                                    
+                                    <div id="typing-indicator-{{ $grievance->id }}" class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest mb-2 h-4 transition-opacity duration-300 opacity-0">
+                                    </div>
+                                    
+                                    <form action="{{ route('authority.comment', $grievance->id) }}" method="POST" class="chat-ajax-form relative flex items-end gap-2" data-grievance-id="{{ $grievance->id }}">
                                         @csrf
                                         <div class="relative w-full">
                                             <textarea name="body" rows="2" placeholder="Send a message to the student..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none shadow-sm transition-all"></textarea>
@@ -264,7 +310,7 @@
     </main>
 
     <footer class="bg-white border-t border-slate-100 text-center text-slate-400 p-6 text-xs mt-auto">
-        &copy; 2026 Mizoram University • Institutional Authority Management Console
+        &copy; 2026 Mizoram University
     </footer>
 
     <script>
@@ -324,45 +370,166 @@
     </script>
 
     <script type="module">
+        const typingTimers = {};
+
         @foreach($grievances as $grievance)
-            
             window.Echo.private(`grievance.{{ $grievance->id }}`)
                 .listen('.App\\Events\\CommentPosted', (event) => {
                     
+                    const indicator = document.getElementById(`typing-indicator-{{ $grievance->id }}`);
+                    if (indicator) {
+                        indicator.classList.remove('opacity-100');
+                        indicator.classList.add('opacity-0');
+                        clearTimeout(typingTimers[{{ $grievance->id }}]);
+                    }
+
                     if (event.comment.user_id !== {{ Auth::id() }}) {
-                        
                         const chatContainer = document.getElementById(`chat-container-{{ $grievance->id }}`);
-                        
                         if (chatContainer) {
                             const emptyState = chatContainer.querySelector('.text-center');
                             if (emptyState) emptyState.remove();
 
-                            const studentInitial = event.comment.user.name ? event.comment.user.name.charAt(0) : 'S';
-                            const studentName = event.comment.user.name || 'Student';
+                            const senderName = event.comment.user.name || 'Student';
+                            const initial = senderName.charAt(0);
+                            
+                            const isStudentView = {{ Auth::user()->role === 'student' ? 'true' : 'false' }};
                             
                             const messageHTML = `
                                 <div class="flex justify-start gap-3 mb-2 animate-[fadeIn_0.3s_ease-out]">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-xs shadow-inner">
-                                        ${studentInitial}
+                                    <div class="w-8 h-8 rounded-full ${isStudentView ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'} flex-shrink-0 flex items-center justify-center font-bold text-xs shadow-inner">
+                                        ${isStudentView ? 'A' : initial}
                                     </div>
-                                    <div class="bg-slate-50 border border-slate-200/60 text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
+                                    <div class="bg-white border ${isStudentView ? 'border-emerald-100' : 'border-slate-200/60'} text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
                                         <p class="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-1">
-                                            ${studentName} <span class="text-emerald-500 ml-1">(New Reply)</span>
+                                            ${isStudentView ? 'Authority Staff' : senderName} <span class="text-emerald-500 ml-1">(New Reply)</span>
                                         </p>
-                                        <p class="text-sm leading-relaxed">${event.comment.body}</p>
+                                        <p class="text-sm leading-relaxed whitespace-pre-wrap">${event.comment.body}</p>
                                         <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">
                                             Just now
                                         </span>
                                     </div>
                                 </div>
                             `;
-
                             chatContainer.insertAdjacentHTML('afterbegin', messageHTML);
                         }
                     }
+                })
+
+                .listenForWhisper('typing', (e) => {
+                    const indicator = document.getElementById(`typing-indicator-{{ $grievance->id }}`);
+                    if (indicator) {
+                        indicator.innerText = `${e.name} is typing...`;
+                        indicator.classList.remove('opacity-0');
+                        indicator.classList.add('opacity-100');
+
+                        clearTimeout(typingTimers[{{ $grievance->id }}]);
+
+                        typingTimers[{{ $grievance->id }}] = setTimeout(() => {
+                            indicator.classList.remove('opacity-100');
+                            indicator.classList.add('opacity-0');
+                        }, 2000); 
+                    }
                 });
-                
         @endforeach
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.chat-ajax-form').forEach(form => {
+                const textarea = form.querySelector('textarea[name="body"]');
+                const grievanceId = form.dataset.grievanceId;
+                const typingIndicator = document.getElementById(`typing-indicator-${grievanceId}`);
+                let typingTimer;
+
+                textarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault(); 
+                        if (this.value.trim() !== '') {
+                            form.dispatchEvent(new Event('submit', { cancelable: true })); 
+                        }
+                    }
+                });
+
+                textarea.addEventListener('input', function() {
+                    window.Echo.private(`grievance.${grievanceId}`)
+                        .whisper('typing', {
+                            name: "{{ Auth::user()->role === 'student' ? (Auth::user()->is_anonymous ? 'Student' : Auth::user()->name) : 'Authority Staff' }}"
+                        });
+                });
+
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault(); 
+                    
+                    const body = textarea.value.trim();
+                    if (!body) return;
+
+                    textarea.disabled = true; 
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json', 
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({ body: body })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            textarea.value = ''; 
+
+                            const indicator = document.getElementById(`typing-indicator-${grievanceId}`);
+                            if (indicator) {
+                                indicator.classList.remove('opacity-100');
+                                indicator.classList.add('opacity-0');
+                            }
+
+                            const chatContainer = document.getElementById(`chat-container-${grievanceId}`);
+                            if (chatContainer) {
+                                const emptyState = chatContainer.querySelector('.text-center');
+                                if (emptyState) emptyState.remove();
+
+                                const myMessageHTML = `
+                                    <div class="flex justify-end mb-2 animate-[fadeIn_0.3s_ease-out]">
+                                        <div class="bg-emerald-700 text-white p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
+                                            <p class="text-sm leading-relaxed whitespace-pre-wrap">${data.comment.body}</p>
+                                            <span class="text-[10px] text-emerald-200 mt-1.5 block text-right font-medium">
+                                                You • Just now
+                                            </span>
+                                        </div>
+                                    </div>
+                                `;
+                                chatContainer.insertAdjacentHTML('afterbegin', myMessageHTML);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Chat Error:', error);
+                    } finally {
+                        textarea.disabled = false;
+                        textarea.focus();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-10px)';
+                    
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
+            }
+        });
     </script>
 </body>
 </html>

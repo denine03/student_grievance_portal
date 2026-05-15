@@ -41,15 +41,7 @@ Route::post('/staff/register', [AuthController::class, 'registerStaffSubmit'])->
 // STUDENT ROUTES
 // ==========================================
 Route::middleware(['auth'])->group(function () {
-    Route::get('/student/dashboard', function () {
-        $grievances = Grievance::with(['student', 'comments.user'])
-                               ->where('student_id', Auth::id())
-                               ->latest()
-                               ->get();
-                               
-        return view('student.dashboard', compact('grievances'));
-    })->name('student.dashboard');
-
+    Route::get('/student/dashboard', [GrievanceController::class, 'index'])->name('student.dashboard');
     Route::get('/student/grievance/new', [GrievanceController::class, 'create'])->name('grievance.create');
     Route::get('/grievance/{grievance}/evidence', [GrievanceController::class, 'downloadAttachment'])->name('grievance.attachment');
     Route::post('/student/grievance', [GrievanceController::class, 'store'])->name('grievance.store');

@@ -16,6 +16,31 @@ class GrievanceController extends Controller
         return view('student.create-grievance');
     }
 
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+
+        $query = Grievance::with(['student', 'comments.user'])
+            ->where('student_id', $user->id)
+            ->latest();
+
+        $query->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('status', $request->status);
+        });
+
+        $query->when($request->filled('search'), function ($q) use ($request) {
+            $searchTerm = '%' . $request->search . '%';
+            $q->where(function ($sub) use ($searchTerm) {
+                $sub->where('subject', 'like', $searchTerm)
+                    ->orWhere('description', 'like', $searchTerm);
+            });
+        });
+
+        $grievances = $query->paginate(10);
+
+        return view('student.dashboard', compact('grievances'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -82,7 +107,14 @@ class GrievanceController extends Controller
             'body' => $request->body
         ]);
 
-        CommentPosted::dispatch($comment);
+        \App\Events\CommentPosted::dispatch($comment);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'comment' => $comment->load('user')
+            ]);
+        }
 
         return back()->with('success', 'Message sent successfully.');
     }

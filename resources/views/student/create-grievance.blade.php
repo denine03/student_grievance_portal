@@ -8,22 +8,56 @@
 </head>
 <body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
 
-    <nav class="sticky top-0 z-40 w-full bg-emerald-900 border-b border-emerald-800 shadow-md">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-emerald-700 rounded-lg flex items-center justify-center shadow-inner shadow-emerald-950/30">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+    <nav class="sticky top-0 z-40 w-full bg-emerald-950 border-b-2 border-emerald-500/30 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.4)]">
+        <div class="max-w mx-auto px-6 sm:px-10">
+            <div class="flex justify-between items-center h-24"> 
+                
+                <div class="flex items-center gap-6 mr-10">
+                    <div class="relative group">
+                        <div class="absolute -inset-1.5 bg-emerald-400/25 rounded-full blur-md opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" alt="MZU Logo" 
+                            class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
                     </div>
-                    <h1 class="text-xl font-extrabold tracking-tight text-white">MZU <span class="text-emerald-400 font-medium">Grievance Portal</span></h1>
+                    
+                    <div class="flex flex-col">
+                        <h1 class="text-3xl font-black tracking-tighter text-white leading-none">
+                            MIZORAM <span class="text-emerald-400">UNIVERSITY</span>
+                        </h1>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            <span class="h-[1px] w-8 bg-emerald-500/50"></span>
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/90">
+                                New Grievance Submission
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-6">
-                    <a href="{{ route('student.dashboard') }}" class="text-sm font-bold text-emerald-200 hover:text-white transition-colors">← Back to Dashboard</a>
+
+                <div class="flex items-center gap-4">
+                    
+                    <a href="{{ route('student.dashboard') }}" class="group hidden lg:flex items-center gap-4 bg-white/5 px-5 py-2.5 h-[52px] rounded-xl border border-white/10 backdrop-blur-md shadow-sm hover:bg-white/10 transition-all">
+                        <div class="flex flex-col items-end">
+                            <span class="text-3x1 font-bold text-white leading-none tracking-tight">Return to Dashboard</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 group-hover:bg-emerald-500 text-emerald-400 group-hover:text-emerald-950 flex items-center justify-center transition-all">
+                            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                        </div>
+                    </a>
+
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="text-sm font-bold text-emerald-200 hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-800">Logout</button>
+                        <button type="submit" class="group flex items-center gap-3 bg-red-500/10 hover:bg-red-600 border border-red-500/20 hover:border-red-500 px-5 py-2.5 h-[52px] rounded-xl transition-all shadow-lg active:scale-95 focus:outline-none">
+                            <span class="text-xs font-black text-white capitalize tracking-widest group-hover:text-white">Logout</span>
+                            <div class="w-8 h-8 rounded-lg bg-red-500/20 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4 text-red-500 group-hover:text-white transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                            </div>
+                        </button>
                     </form>
                 </div>
+
             </div>
         </div>
     </nav>
