@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GrievanceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthorityController;
 use App\Models\Grievance;
 
 // ==========================================
@@ -59,36 +60,9 @@ Route::middleware(['auth'])->group(function () {
 // AUTHORITY ROUTES
 // ==========================================
 Route::middleware(['auth'])->prefix('authority')->group(function () {
-    Route::get('/dashboard', function () {
-        $user = Auth::user();
-        
-        $query = Grievance::with('student')->latest();
-
-        if ($user->role === 'hod') {
-            $query->where('category', '!=', 'Hostel')
-                  ->whereHas('student', function ($q) use ($user) {
-                      $q->where('department', $user->department);
-                  });
-        } elseif ($user->role === 'dean') {
-            $query->where('category', '!=', 'Hostel')
-                  ->whereHas('student', function ($q) use ($user) {
-                      $q->where('school', $user->school);
-                  });
-        } elseif ($user->role === 'dsw_head') {
-            $query->whereIn('category', ['Hostel', 'Harassment', 'Infrastructure']);
-        }
-
-        $pendingCount = (clone $query)->where('status', 'pending')->count();
-        $inProgressCount = (clone $query)->where('status', 'in_progress')->count();
-        $resolvedCount = (clone $query)->whereIn('status', ['resolved', 'closed'])->count();
-
-        $grievances = $query->get(); 
-
-        return view('authority.dashboard', compact('grievances', 'pendingCount', 'inProgressCount', 'resolvedCount'));
-        
-    })->name('authority.dashboard');
-
-    Route::patch('/grievance/{grievance}/status', [GrievanceController::class, 'updateStatus'])->name('authority.grievance.update');
+    Route::get('/dashboard', [AuthorityController::class, 'dashboard'])->name('authority.dashboard');
+    Route::patch('/grievance/{grievance}/status', [AuthorityController::class, 'updateStatus'])->name('authority.grievance.update');
+    Route::post('/grievance/{grievance}/comment', [AuthorityController::class, 'addComment'])->name('authority.comment');
 });
 
 // ==========================================

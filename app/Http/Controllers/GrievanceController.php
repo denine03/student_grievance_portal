@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Events\GrievanceStatusUpdated;
 use App\Models\Grievance;
+use App\Events\CommentPosted;
 
 class GrievanceController extends Controller
 {
@@ -76,10 +77,12 @@ class GrievanceController extends Controller
     {
         $request->validate(['body' => 'required|string|max:1000']);
 
-        $grievance->comments()->create([
+        $comment = $grievance->comments()->create([
             'user_id' => Auth::id(),
             'body' => $request->body
         ]);
+
+        CommentPosted::dispatch($comment);
 
         return back()->with('success', 'Message sent successfully.');
     }

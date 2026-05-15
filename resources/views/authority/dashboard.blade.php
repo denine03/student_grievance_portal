@@ -196,6 +196,56 @@
                                         </div>
                                     @endif
                                 </div>
+
+                                <div class="mt-8 pt-6 border-t border-slate-100">
+                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4">Case Communication</h4>
+                                    
+                                    <div id="chat-container-{{ $grievance->id }}" class="space-y-4 max-h-72 overflow-y-auto pr-2 mb-5 flex flex-col-reverse no-scrollbar">
+                                        @forelse($grievance->comments as $comment)
+                                            @if($comment->user_id === Auth::id())
+                                                <div class="flex justify-end mb-2">
+                                                    <div class="bg-emerald-700 text-white p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
+                                                        <p class="text-sm leading-relaxed">{{ $comment->body }}</p>
+                                                        <span class="text-[10px] text-emerald-200 mt-1.5 block text-right font-medium">
+                                                            You • {{ $comment->created_at->diffForHumans() }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="flex justify-start gap-3 mb-2">
+                                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-xs shadow-inner">
+                                                        {{ substr($comment->user->name ?? 'S', 0, 1) }}
+                                                    </div>
+                                                    <div class="bg-slate-50 border border-slate-200/60 text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
+                                                        <p class="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-1">
+                                                            {{ $comment->user->name ?? 'Student' }} 
+                                                            <span class="text-slate-400 font-bold ml-1">({{ $grievance->is_anonymous ? 'Anonymous' : 'ID: '.$grievance->student_id }})</span>
+                                                        </p>
+                                                        <p class="text-sm leading-relaxed">{{ $comment->body }}</p>
+                                                        <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">
+                                                            {{ $comment->created_at->diffForHumans() }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @empty
+                                            <div class="text-center py-6">
+                                                <p class="text-sm text-slate-400 italic">No conversation history yet. Send a message to the student.</p>
+                                            </div>
+                                        @endforelse
+                                    </div>
+
+                                    <form action="{{ route('authority.comment', $grievance->id) }}" method="POST" class="relative flex items-end gap-2">
+                                        @csrf
+                                        <div class="relative w-full">
+                                            <textarea name="body" rows="2" placeholder="Send a message to the student..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none shadow-sm transition-all"></textarea>
+                                        </div>
+                                        <button type="submit" class="shrink-0 bg-emerald-800 hover:bg-emerald-700 text-white h-[46px] px-5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 focus:outline-none mb-1">
+                                            <span class="hidden sm:inline text-sm">Send</span>
+                                            <svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -271,6 +321,48 @@
                 btnSpan.innerText = 'Show Attached Evidence';
             }
         }
+    </script>
+
+    <script type="module">
+        @foreach($grievances as $grievance)
+            
+            window.Echo.private(`grievance.{{ $grievance->id }}`)
+                .listen('.App\\Events\\CommentPosted', (event) => {
+                    
+                    if (event.comment.user_id !== {{ Auth::id() }}) {
+                        
+                        const chatContainer = document.getElementById(`chat-container-{{ $grievance->id }}`);
+                        
+                        if (chatContainer) {
+                            const emptyState = chatContainer.querySelector('.text-center');
+                            if (emptyState) emptyState.remove();
+
+                            const studentInitial = event.comment.user.name ? event.comment.user.name.charAt(0) : 'S';
+                            const studentName = event.comment.user.name || 'Student';
+                            
+                            const messageHTML = `
+                                <div class="flex justify-start gap-3 mb-2 animate-[fadeIn_0.3s_ease-out]">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-xs shadow-inner">
+                                        ${studentInitial}
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-200/60 text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
+                                        <p class="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-1">
+                                            ${studentName} <span class="text-emerald-500 ml-1">(New Reply)</span>
+                                        </p>
+                                        <p class="text-sm leading-relaxed">${event.comment.body}</p>
+                                        <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">
+                                            Just now
+                                        </span>
+                                    </div>
+                                </div>
+                            `;
+
+                            chatContainer.insertAdjacentHTML('afterbegin', messageHTML);
+                        }
+                    }
+                });
+                
+        @endforeach
     </script>
 </body>
 </html>
