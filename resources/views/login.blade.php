@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - MZU</title>
+    <link rel="preload" as="image" href="{{ asset('images/MZU-LOGO-2001-new.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/MZU-LOGO-2001-new.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
@@ -14,8 +16,11 @@
                 <div class="flex items-center gap-6">
                     <div class="relative group">
                         <div class="absolute -inset-1.5 bg-emerald-400/25 rounded-full blur-md opacity-75 group-hover:opacity-100 transition duration-500"></div>
-                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" alt="MZU Logo" 
-                             class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
+                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" 
+                            alt="MZU Logo" 
+                            width="64" 
+                            height="64" 
+                            class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
                     </div>
                     <div class="flex flex-col">
                         <h1 class="text-3xl font-black tracking-tighter text-white leading-none">
@@ -63,7 +68,7 @@
                 <div class="group">
                     <div class="flex justify-between items-center mb-2">
                         <label class="block text-[12px] font-black uppercase tracking-widest text-slate-400 group-focus-within:text-emerald-600 transition-colors" for="password">Password</label>
-                        <a href="#" class="text-[10px] font-black text-emerald-700 hover:text-emerald-800 uppercase tracking-widest transition-colors">Forgot?</a>
+                        <a href="{{ route('password.request') }}" class="text-[10px] font-black text-emerald-700 hover:text-emerald-800 uppercase tracking-widest transition-colors">Forgot Password?</a>
                     </div>
                     <input type="password" id="password" name="password" 
                         class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white transition-all outline-none @error('password') border-red-500 @enderror" required>

@@ -10,9 +10,6 @@ use App\Events\CommentPosted;
 
 class AuthorityController extends Controller
 {
-    /**
-     * Display the filtered authority dashboard.
-     */
     public function dashboard(Request $request)
     {
         $user = Auth::user();
@@ -47,14 +44,17 @@ class AuthorityController extends Controller
 
         $grievances = $query->get(); 
 
+        if ($request->ajax()) {
+            return view('authority.partials.dashboard-content', compact(
+                'grievances', 'pendingCount', 'inProgressCount', 'resolvedCount'
+            ))->render();
+        }
+
         return view('authority.dashboard', compact(
             'grievances', 'pendingCount', 'inProgressCount', 'resolvedCount'
         ));
     }
 
-    /**
-     * Update the grievance status and trigger the WebSockets event.
-     */
     public function updateStatus(Request $request, Grievance $grievance)
     {
         $validated = $request->validate([
@@ -68,9 +68,6 @@ class AuthorityController extends Controller
         return back()->with('success', 'Grievance status updated to ' . str_replace('_', ' ', $validated['status']));
     }
 
-    /**
-     * Add an official reply to the grievance chat.
-     */
     public function addComment(Request $request, Grievance $grievance)
     {
         $request->validate(['body' => 'required|string|max:1000']);

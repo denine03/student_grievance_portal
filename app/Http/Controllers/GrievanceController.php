@@ -38,6 +38,10 @@ class GrievanceController extends Controller
 
         $grievances = $query->paginate(10);
 
+        if ($request->ajax()) {
+            return view('student.partials.grievance-list', compact('grievances'))->render();
+        }
+
         return view('student.dashboard', compact('grievances'));
     }
 

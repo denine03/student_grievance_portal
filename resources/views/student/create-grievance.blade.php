@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Grievance - MZU Portal</title>
+    <link rel="preload" as="image" href="{{ asset('images/MZU-LOGO-2001-new.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/MZU-LOGO-2001-new.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
@@ -15,7 +17,10 @@
                 <div class="flex items-center gap-6 mr-10">
                     <div class="relative group">
                         <div class="absolute -inset-1.5 bg-emerald-400/25 rounded-full blur-md opacity-75 group-hover:opacity-100 transition duration-500"></div>
-                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" alt="MZU Logo" 
+                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" 
+                            alt="MZU Logo" 
+                            width="64" 
+                            height="64" 
                             class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
                     </div>
                     

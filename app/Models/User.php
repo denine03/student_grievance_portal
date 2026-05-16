@@ -33,7 +33,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // Role Helper Methods
     public function isStudent() {
         return $this->role === 'student';
     }

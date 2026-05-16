@@ -3,30 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Grievance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function index(Request $request)
+    public function dashboard()
     {
-        $query = User::where('id', '!=', Auth::id())->latest();
+        $totalGrievances = Grievance::count();
+        $pendingCount = Grievance::where('status', 'pending')->count();
+        $resolvedCount = Grievance::whereIn('status', ['resolved', 'closed'])->count();
+        $urgentCount = Grievance::where('is_emergency', true)->count();
 
-        $filter = $request->query('filter');
+        $recentGrievances = Grievance::with('student')->latest()->take(5)->get();
+
+        return view('admin.dashboard', compact(
+            'totalGrievances', 'pendingCount', 'resolvedCount', 'urgentCount', 'recentGrievances'
+        ));
+    }
+
+    public function index()
+    {
+        $users = User::latest()->paginate(15);
+        $pageTitle = "Staff & Student Directory";
         
-        if ($filter === 'students') {
-            $query->where('role', 'student');
-            $pageTitle = 'Student Directory';
-        } elseif ($filter === 'staff') {
-            $query->whereIn('role', ['hod', 'dean', 'dsw_head']);
-            $pageTitle = 'Staff & Authorities';
-        } else {
-            $pageTitle = 'All System Users';
-        }
-
-        $users = $query->paginate(10)->appends($request->query());
-
-        return view('admin.users', compact('users', 'pageTitle', 'filter'));
+        return view('admin.users', compact('users', 'pageTitle'));
     }
 
     public function updateUser(Request $request, User $user)
@@ -37,11 +39,7 @@ class AdminController extends Controller
             'school' => 'nullable|string|max:255',
         ]);
 
-        $user->update([
-            'role' => $validated['role'],
-            'department' => $validated['department'],
-            'school' => $validated['school'],
-        ]);
+        $user->update($validated);
 
         return back()->with('success', "Account for {$user->name} has been successfully updated.");
     }

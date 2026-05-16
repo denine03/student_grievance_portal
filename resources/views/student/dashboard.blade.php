@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - MZU</title>
+    <link rel="preload" as="image" href="{{ asset('images/MZU-LOGO-2001-new.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/MZU-LOGO-2001-new.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
 </head>
 <body class="bg-slate-50 antialiased font-sans text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
@@ -15,8 +17,11 @@
                 <div class="flex items-center gap-6 mr-10">
                     <div class="relative group">
                         <div class="absolute -inset-1.5 bg-emerald-400/25 rounded-full blur-md opacity-75 group-hover:opacity-100 transition duration-500"></div>
-                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" alt="MZU Logo" 
-                             class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
+                        <img src="{{ asset('images/MZU-LOGO-2001-new.png') }}" 
+                            alt="MZU Logo" 
+                            width="64" 
+                            height="64" 
+                            class="relative w-16 h-16 object-contain bg-white rounded-full p-1.5 shadow-xl border-2 border-emerald-400/50 transition-all duration-500">
                     </div>
                     
                     <div class="flex flex-col">
@@ -75,15 +80,20 @@
         </div>
 
         @if(session('success'))
-            <div class="bg-emerald-50/80 backdrop-blur-sm border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8 shadow-sm flex items-center gap-3 animate-[fadeIn_0.5s_ease-out]">
-                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span class="font-medium text-sm">{{ session('success') }}</span>
+            <div id="success-alert" class="bg-emerald-50/80 backdrop-blur-sm border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl mb-8 shadow-sm flex items-center justify-between animate-[fadeIn_0.5s_ease-out] transition-all duration-500">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="font-medium text-sm">{{ session('success') }}</span>
+                </div>
+                <button onclick="document.getElementById('success-alert').style.opacity='0'; setTimeout(() => document.getElementById('success-alert').remove(), 300)" class="text-emerald-400 hover:text-emerald-600 transition-colors focus:outline-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
         @endif
 
         <div class="space-y-5">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-8">
-                <form action="{{ route('student.dashboard') }}" method="GET" class="flex flex-col md:flex-row gap-4">
+                <form id="filter-form" action="{{ route('student.dashboard') }}" method="GET" class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1 relative group">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -93,7 +103,7 @@
                     </div>
 
                     <div class="w-full md:w-48">
-                        <select name="status" onchange="this.form.submit()" 
+                        <select name="status" id="status-select"
                             class="block w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all">
                             <option value="">All Statuses</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -116,184 +126,9 @@
                 </form>
             </div>
             
-            @forelse ($grievances as $grievance)
-                <div class="group bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-emerald-200 transition-all duration-300 overflow-hidden">
-                    <div class="p-6 sm:p-7">
-                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-700/80 bg-emerald-50 px-2.5 py-1 rounded-md">
-                                        {{ $grievance->category }}
-                                    </span>
-                                    @if($grievance->is_emergency)
-                                        <span class="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-red-600 bg-red-50 px-2.5 py-1 rounded-md">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                            Urgent
-                                        </span>
-                                    @endif
-                                </div>
-                                <h3 class="text-xl font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors">{{ $grievance->subject }}</h3>
-                            </div>
-                            
-                            <span id="status-badge-{{ $grievance->id }}" class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-colors duration-300
-                                {{ $grievance->status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200/60' : '' }}
-                                {{ $grievance->status === 'in_progress' ? 'bg-teal-50 text-teal-700 border-teal-200/60' : '' }}
-                                {{ $grievance->status === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200/60' : '' }}
-                                {{ $grievance->status === 'closed' ? 'bg-slate-50 text-slate-600 border-slate-200' : '' }}">
-                                @if($grievance->status === 'pending')
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                @elseif($grievance->status === 'in_progress')
-                                    <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-                                @endif
-                                {{ ucfirst(str_replace('_', ' ', $grievance->status)) }}
-                            </span>
-                        </div>
-                        
-                        <p class="text-slate-500 text-sm leading-relaxed mb-5 line-clamp-2">{{ $grievance->description }}</p>
-                        
-                        <div class="flex items-center justify-between pt-5 border-t border-slate-100">
-                            <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
-                                <span>#{{ str_pad($grievance->id, 4, '0', STR_PAD_LEFT) }}</span>
-                                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                                <span>{{ $grievance->created_at->format('M d, Y') }}</span>
-                            </div>
-                            
-                            <button onclick="toggleDetails('{{ $grievance->id }}')" class="text-sm font-bold text-slate-600 hover:text-emerald-700 flex items-center gap-1 transition-colors focus:outline-none">
-                                View Details 
-                                <svg id="icon-{{ $grievance->id }}" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                        </div>
-
-                        <div id="details-{{ $grievance->id }}" class="hidden mt-6 bg-slate-50/50 rounded-xl border border-slate-100 p-5 sm:p-6 transition-all">
-                            
-                            @php
-                                $statusLevel = 1;
-                                if($grievance->status === 'in_progress') $statusLevel = 2;
-                                elseif($grievance->status === 'resolved') $statusLevel = 3;
-                                elseif($grievance->status === 'closed') $statusLevel = 4;
-                                $progressWidth = ($statusLevel - 1) * 33.33;
-                            @endphp
-
-                            <div class="mb-10 pt-2">
-                                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-6 text-center">Live Progress Tracker</h4>
-                                
-                                <div class="relative max-w-2xl mx-auto">
-                                    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full"></div>
-                                    
-                                    <div id="progress-line-{{ $grievance->id }}" class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-emerald-500 rounded-full transition-all duration-700 ease-out" style="width: {{ $progressWidth }}%"></div>
-
-                                    <div class="relative flex justify-between items-center w-full">
-                                        
-                                        <div class="flex flex-col items-center relative">
-                                            <div id="step-1-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 1 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            </div>
-                                            <span id="step-text-1-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 1 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Submitted</span>
-                                        </div>
-
-                                        <div class="flex flex-col items-center relative">
-                                            <div id="step-2-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 2 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                            </div>
-                                            <span id="step-text-2-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 2 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Reviewing</span>
-                                        </div>
-
-                                        <div class="flex flex-col items-center relative">
-                                            <div id="step-3-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 3 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                            </div>
-                                            <span id="step-text-3-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 3 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Resolved</span>
-                                        </div>
-
-                                        <div class="flex flex-col items-center relative">
-                                            <div id="step-4-{{ $grievance->id }}" class="w-8 h-8 rounded-full flex items-center justify-center shadow-md z-10 transition-colors duration-500 {{ $statusLevel >= 4 ? 'bg-emerald-600 text-white ring-4 ring-emerald-50' : 'bg-white border-2 border-slate-200 text-slate-300' }}">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                                            </div>
-                                            <span id="step-text-4-{{ $grievance->id }}" class="absolute top-10 mt-1 text-[11px] uppercase tracking-wide whitespace-nowrap {{ $statusLevel >= 4 ? 'font-bold text-emerald-800' : 'font-semibold text-slate-400' }}">Closed</span>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="border-t border-slate-200/60 pt-6">
-                                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Complete Report</h4>
-                                <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">{{ $grievance->description }}</p>
-                                
-                                @if($grievance->attachment_path)
-                                    <div class="mt-6 pt-5 border-t border-slate-200/60">
-                                        <button onclick="openEvidenceModal('{{ route('grievance.attachment', $grievance->id) }}')" class="group inline-flex items-center gap-2.5 bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-bold text-slate-700 hover:text-emerald-700 hover:border-emerald-300 hover:shadow-sm hover:bg-emerald-50/50 transition-all focus:outline-none">
-                                            <svg class="w-5 h-5 text-slate-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                            View Attached Evidence
-                                        </button>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="mt-8 border-t border-slate-200/60 pt-6">
-                                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-5">Case Communication</h4>
-                                
-                                <div id="chat-container-{{ $grievance->id }}" class="space-y-4 max-h-72 overflow-y-auto pr-2 mb-5 flex flex-col-reverse no-scrollbar">
-                                    @forelse($grievance->comments as $comment)
-                                        @if($comment->user_id === Auth::id())
-                                            <div class="flex justify-end mb-4">
-                                                <div class="bg-emerald-600 text-white p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
-                                                    <p class="text-sm leading-relaxed">{{ $comment->body }}</p>
-                                                    <span class="text-[10px] text-emerald-200 mt-1.5 block text-right font-medium">
-                                                        {{ $comment->created_at->diffForHumans() }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="flex justify-start gap-3 mb-4">
-                                                <div class="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-xs shadow-inner">
-                                                    {{ substr($comment->user->name, 0, 1) }}
-                                                </div>
-                                                <div class="bg-white border border-slate-200/60 text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
-                                                    <p class="text-xs font-extrabold text-slate-800 mb-1">
-                                                        {{ $comment->user->name }} <span class="text-slate-400 font-medium">({{ strtoupper(str_replace('_', ' ', $comment->user->role)) }})</span>
-                                                    </p>
-                                                    <p class="text-sm leading-relaxed">{{ $comment->body }}</p>
-                                                    <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">
-                                                        {{ $comment->created_at->diffForHumans() }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    @empty
-                                        <div class="text-center py-6">
-                                            <p class="text-sm text-slate-400 italic">No messages yet. Send a message to the reviewing authority.</p>
-                                        </div>
-                                    @endforelse
-                                </div>
-
-                                <div id="typing-indicator-{{ $grievance->id }}" class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest mb-2 h-4 transition-opacity duration-300 opacity-0">
-                                </div>
-
-                                <form action="{{ route('grievance.comment', $grievance->id) }}" method="POST" class="chat-ajax-form relative flex items-end gap-2" data-grievance-id="{{ $grievance->id }}">
-                                    @csrf
-                                    <div class="relative w-full">
-                                        <textarea name="body" rows="2" placeholder="Type a message..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none shadow-sm transition-all"></textarea>
-                                    </div>
-                                    <button type="submit" class="shrink-0 bg-emerald-800 hover:bg-emerald-700 text-white h-[46px] px-5 rounded-xl font-bold shadow-md transition-all flex items-center gap-2 focus:outline-none mb-1">
-                                        <span class="hidden sm:inline text-sm">Send</span>
-                                        <svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-16 flex flex-col items-center justify-center text-center">
-                    <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">No grievances found</h3>
-                    <p class="text-slate-500 text-sm mb-8 max-w-sm">You haven't submitted any tickets yet. When you do, you can track their real-time progress right here.</p>
-                    <a href="{{ route('grievance.create') }}" class="bg-emerald-800 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm">
-                        File a New Grievance
-                    </a>
-                </div>
-            @endforelse
+            <div id="grievance-list-container">
+                @include('student.partials.grievance-list')
+            </div>
         </div>
     </main>
 
@@ -305,7 +140,7 @@
                     <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     </div>
-                    <h3 class="font-bold text-slate-800 tracking-tight">Secure Document Viewer</h3>
+                    <h3 class="font-bold text-slate-800 tracking-tight">Document Viewer</h3>
                 </div>
                 
                 <button onclick="closeEvidenceModal()" class="group flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-red-50 transition-colors focus:outline-none">
@@ -561,8 +396,11 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        window.initializeChatForms = function() {
             document.querySelectorAll('.chat-ajax-form').forEach(form => {
+                if (form.dataset.initialized) return;
+                form.dataset.initialized = 'true';
+
                 const textarea = form.querySelector('textarea[name="body"]');
                 const grievanceId = form.dataset.grievanceId;
                 const typingIndicator = document.getElementById(`typing-indicator-${grievanceId}`);
@@ -640,6 +478,76 @@
                     }
                 });
             });
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            window.initializeChatForms();
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterForm = document.getElementById('filter-form');
+            const statusSelect = document.getElementById('status-select');
+            const listContainer = document.getElementById('grievance-list-container');
+
+            if (!filterForm || !listContainer) return;
+
+            async function fetchFilteredData() {
+                listContainer.style.opacity = '0.5'; 
+                
+                const formData = new FormData(filterForm);
+                const params = new URLSearchParams(formData).toString();
+                const url = `${filterForm.action}?${params}`;
+
+                try {
+                    const response = await fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    
+                    if (response.ok) {
+                        listContainer.innerHTML = await response.text();
+
+                        history.pushState(null, '', url);
+
+                        if (typeof window.initializeChatForms === 'function') {
+                            window.initializeChatForms();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Filtering error:', error);
+                } finally {
+                    listContainer.style.opacity = '1';
+                }
+            }
+
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                fetchFilteredData();
+            });
+
+            if (statusSelect) {
+                statusSelect.addEventListener('change', function() {
+                    fetchFilteredData();
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.getElementById('success-alert');
+
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-10px)';
+                    
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
+            }
         });
     </script>
 </body>

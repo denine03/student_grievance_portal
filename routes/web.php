@@ -11,6 +11,7 @@ use App\Http\Controllers\GrievanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthorityController;
 use App\Models\Grievance;
+use App\Http\Controllers\PasswordResetController;
 
 // ==========================================
 // PUBLIC ROUTES
@@ -27,15 +28,18 @@ Route::get('/register', function () {
     return view('register');
 })->name('register.form');
 
-Route::post('/register', [AuthController::class, 'registerSubmit'])->name('register');
-Route::post('/login', [AuthController::class, 'loginSubmit'])->name('login.submit');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 Route::get('/staff/register', function (Illuminate\Http\Request $request) {
     return view('staff-register'); 
 })->name('staff.register.form')->middleware('signed');
 
+Route::post('/register', [AuthController::class, 'registerSubmit'])->name('register');
+Route::post('/login', [AuthController::class, 'loginSubmit'])->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/staff/register', [AuthController::class, 'registerStaffSubmit'])->name('staff.register');
+Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'updatePassword'])->name('password.update');
 
 // ==========================================
 // STUDENT ROUTES
@@ -61,9 +65,8 @@ Route::middleware(['auth'])->prefix('authority')->group(function () {
 // ADMIN ROUTES
 // ==========================================
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/invite-staff', function () {
         return view('admin.invite-staff');
@@ -71,16 +74,16 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::get('/users', [AdminController::class, 'index'])->name('admin.users');
 
-    Route::post('/invite-staff', function (Request $request) {
+    Route::post('/invite-staff', function (Illuminate\Http\Request $request) {
         $request->validate([
             'email' => 'required|email'
         ]);
 
-        $inviteUrl = URL::temporarySignedRoute(
+        $inviteUrl = Illuminate\Support\Facades\URL::temporarySignedRoute(
             'staff.register.form', now()->addHours(48)
         );
 
-        Mail::to($request->email)->send(new StaffInvitation($inviteUrl));
+        Illuminate\Support\Facades\Mail::to($request->email)->send(new App\Mail\StaffInvitation($inviteUrl));
 
         return back()->with('success', 'Invitation successfully sent to ' . $request->email);
     })->name('admin.send_invite');
