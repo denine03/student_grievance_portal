@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end gap-4 w-full md:w-auto shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-5 md:pt-0 md:pl-8">
-                    <button onclick="openModal('{{ $grievance->id }}')" class="group/btn text-emerald-700 hover:text-emerald-900 font-extrabold text-sm flex items-center gap-2 transition-all focus:outline-none">
+                    <button onclick="toggleModal('{{ $grievance->id }}', 'open')" class="group/btn text-emerald-700 hover:text-emerald-900 font-extrabold text-sm flex items-center gap-2 transition-all focus:outline-none">
                         <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center group-hover/btn:bg-emerald-100 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         </div>
@@ -123,7 +123,7 @@
                             <span class="text-[10px] uppercase font-extrabold tracking-widest text-emerald-600">{{ $grievance->category }}</span>
                         </div>
                     </div>
-                    <button onclick="closeModal('{{ $grievance->id }}')" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all focus:outline-none">
+                    <button onclick="toggleModal('{{ $grievance->id }}', 'close')" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all focus:outline-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>

@@ -43,6 +43,7 @@ class AuthController extends Controller
             'password' => ['required', 'min:8'],
             'role' => ['required', 'in:hod,dean,dsw_head'], 
             'department' => ['required', 'string'],
+            'school' => ['required', 'string'],
         ]);
 
         $user = User::create([
@@ -51,8 +52,8 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
             'department' => $validated['department'],
+            'school' => $validated['school'],
             'student_id' => null, 
-            'school' => null,     
         ]);
 
         Auth::login($user);

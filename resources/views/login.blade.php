@@ -41,7 +41,7 @@
     <main class="max-w-xl mx-auto mt-16 p-6 mb-20">
         <div class="text-center mb-10">
             <h2 class="text-4xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
-            <p class="text-slate-500 mt-2 text-sm font-medium">Sign in to manage your grievances and track progress.</p>
+            <p class="text-slate-500 mt-2 text-sm font-medium">Sign in to track status and have live chat.</p>
         </div>
 
         <div class="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(6,78,59,0.08)] border border-slate-100 p-8 sm:p-10 transition-all">

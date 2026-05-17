@@ -176,6 +176,8 @@
 
     <script type="module">
         const userId = {{ Auth::user()->id }};
+        const typingTimers = {};
+        window.activeEchoChannels = window.activeEchoChannels || [];
 
         window.Echo.private(`student.${userId}`)
             .listen('GrievanceStatusUpdated', (event) => {
@@ -232,79 +234,123 @@
                             }
                         }
                     }
+                    
                     let subjectStr = event.grievance.subject;
-                    if (subjectStr.length > 30) {
-                        subjectStr = subjectStr.substring(0, 30) + '...';
-                    }
-
-                    showToast(
-                        'Status Update', 
-                        `Ticket <strong>#${event.grievance.id}</strong> ("${subjectStr}") is now <strong>${formattedText}</strong>.`
-                    );
+                    if (subjectStr.length > 30) subjectStr = subjectStr.substring(0, 30) + '...';
+                    showToast('Status Update', `Ticket <strong>#${event.grievance.id}</strong> ("${subjectStr}") is now <strong>${formattedText}</strong>.`);
                 }
             });
 
-        const typingTimers = {};
+        window.initializeChatForms = function() {
+            document.querySelectorAll('.chat-ajax-form').forEach(form => {
+                if (form.dataset.initialized) return;
+                form.dataset.initialized = 'true';
 
-        @foreach($grievances as $grievance)
-            window.Echo.private(`grievance.{{ $grievance->id }}`)
-                .listen('.App\\Events\\CommentPosted', (event) => {
+                const textarea = form.querySelector('textarea[name="body"]');
+                const grievanceId = form.dataset.grievanceId;
+                const typingIndicator = document.getElementById(`typing-indicator-${grievanceId}`);
+                const chatContainer = document.getElementById(`chat-container-${grievanceId}`);
+
+                if (!window.activeEchoChannels.includes(grievanceId)) {
+                    window.Echo.private(`grievance.${grievanceId}`)
+                        .listen('.App\\Events\\CommentPosted', (event) => {
+                            if (typingIndicator) {
+                                typingIndicator.classList.replace('opacity-100', 'opacity-0');
+                                clearTimeout(typingTimers[grievanceId]);
+                            }
+
+                            if (event.comment.user_id !== userId && chatContainer) {
+                                const emptyState = chatContainer.querySelector('.text-center');
+                                if (emptyState) emptyState.remove();
+
+                                const senderName = event.comment.user.name || 'Authority';
+                                const initial = senderName.charAt(0);
+                                
+                                const messageHTML = `
+                                    <div class="flex justify-start gap-3 mb-4 animate-[fadeIn_0.3s_ease-out]">
+                                        <div class="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-xs shadow-inner">
+                                            ${initial}
+                                        </div>
+                                        <div class="bg-white border border-slate-200/60 text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
+                                            <p class="text-xs font-extrabold text-slate-800 mb-1">
+                                                ${senderName} <span class="text-emerald-500 ml-1">(New Reply)</span>
+                                            </p>
+                                            <p class="text-sm leading-relaxed whitespace-pre-wrap">${event.comment.body}</p>
+                                            <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">Just now</span>
+                                        </div>
+                                    </div>`;
+                                chatContainer.insertAdjacentHTML('afterbegin', messageHTML);
+                            }
+                        })
+                        .listenForWhisper('typing', (e) => {
+                            if (typingIndicator) {
+                                typingIndicator.innerText = `${e.name} is typing...`;
+                                typingIndicator.classList.replace('opacity-0', 'opacity-100');
+                                clearTimeout(typingTimers[grievanceId]);
+                                typingTimers[grievanceId] = setTimeout(() => typingIndicator.classList.replace('opacity-100', 'opacity-0'), 2000); 
+                            }
+                        });
                     
-                    const indicator = document.getElementById(`typing-indicator-{{ $grievance->id }}`);
-                    if (indicator) {
-                        indicator.classList.remove('opacity-100');
-                        indicator.classList.add('opacity-0');
-                        clearTimeout(typingTimers[{{ $grievance->id }}]);
-                    }
+                    window.activeEchoChannels.push(grievanceId);
+                }
 
-                    if (event.comment.user_id !== {{ Auth::id() }}) {
-                        const chatContainer = document.getElementById(`chat-container-{{ $grievance->id }}`);
-                        if (chatContainer) {
-                            const emptyState = chatContainer.querySelector('.text-center');
-                            if (emptyState) emptyState.remove();
-
-                            const senderName = event.comment.user.name || 'Student';
-                            const initial = senderName.charAt(0);
-                            
-                            const isStudentView = {{ Auth::user()->role === 'student' ? 'true' : 'false' }};
-                            
-                            const messageHTML = `
-                                <div class="flex justify-start gap-3 mb-2 animate-[fadeIn_0.3s_ease-out]">
-                                    <div class="w-8 h-8 rounded-full ${isStudentView ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'} flex-shrink-0 flex items-center justify-center font-bold text-xs shadow-inner">
-                                        ${isStudentView ? 'A' : initial}
-                                    </div>
-                                    <div class="bg-white border ${isStudentView ? 'border-emerald-100' : 'border-slate-200/60'} text-slate-700 p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-sm">
-                                        <p class="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-1">
-                                            ${isStudentView ? 'Authority Staff' : senderName} <span class="text-emerald-500 ml-1">(New Reply)</span>
-                                        </p>
-                                        <p class="text-sm leading-relaxed whitespace-pre-wrap">${event.comment.body}</p>
-                                        <span class="text-[10px] text-slate-400 mt-1.5 block font-medium">
-                                            Just now
-                                        </span>
-                                    </div>
-                                </div>
-                            `;
-                            chatContainer.insertAdjacentHTML('afterbegin', messageHTML);
-                        }
-                    }
-                })
-
-                .listenForWhisper('typing', (e) => {
-                    const indicator = document.getElementById(`typing-indicator-{{ $grievance->id }}`);
-                    if (indicator) {
-                        indicator.innerText = `${e.name} is typing...`;
-                        indicator.classList.remove('opacity-0');
-                        indicator.classList.add('opacity-100');
-
-                        clearTimeout(typingTimers[{{ $grievance->id }}]);
-
-                        typingTimers[{{ $grievance->id }}] = setTimeout(() => {
-                            indicator.classList.remove('opacity-100');
-                            indicator.classList.add('opacity-0');
-                        }, 2000); 
+                textarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault(); 
+                        if (this.value.trim() !== '') form.dispatchEvent(new Event('submit', { cancelable: true })); 
                     }
                 });
-        @endforeach
+
+                textarea.addEventListener('input', function() {
+                    window.Echo.private(`grievance.${grievanceId}`).whisper('typing', {
+                        name: "{{ Auth::user()->is_anonymous ? 'Student' : Auth::user()->name }}"
+                    });
+                });
+
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault(); 
+                    const body = textarea.value.trim();
+                    if (!body) return;
+
+                    textarea.disabled = true; 
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json', 
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({ body })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            textarea.value = ''; 
+                            if (typingIndicator) typingIndicator.classList.replace('opacity-100', 'opacity-0');
+
+                            if (chatContainer) {
+                                const emptyState = chatContainer.querySelector('.text-center');
+                                if (emptyState) emptyState.remove();
+
+                                const myMessageHTML = `
+                                    <div class="flex justify-end mb-4 animate-[fadeIn_0.3s_ease-out]">
+                                        <div class="bg-emerald-600 text-white p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
+                                            <p class="text-sm leading-relaxed whitespace-pre-wrap">${data.comment.body}</p>
+                                            <span class="text-[10px] text-emerald-200 mt-1.5 block text-right font-medium">You • Just now</span>
+                                        </div>
+                                    </div>`;
+                                chatContainer.insertAdjacentHTML('afterbegin', myMessageHTML);
+                            }
+                        }
+                    } catch (error) { console.error('Chat Error:', error); } 
+                    finally { textarea.disabled = false; textarea.focus(); }
+                });
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', window.initializeChatForms);
     </script>
 
     <script>
@@ -393,96 +439,6 @@
                 }
             }, 300);
         }
-    </script>
-
-    <script>
-        window.initializeChatForms = function() {
-            document.querySelectorAll('.chat-ajax-form').forEach(form => {
-                if (form.dataset.initialized) return;
-                form.dataset.initialized = 'true';
-
-                const textarea = form.querySelector('textarea[name="body"]');
-                const grievanceId = form.dataset.grievanceId;
-                const typingIndicator = document.getElementById(`typing-indicator-${grievanceId}`);
-                let typingTimer;
-
-                textarea.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault(); 
-                        if (this.value.trim() !== '') {
-                            form.dispatchEvent(new Event('submit', { cancelable: true })); 
-                        }
-                    }
-                });
-
-                textarea.addEventListener('input', function() {
-                    window.Echo.private(`grievance.${grievanceId}`)
-                        .whisper('typing', {
-                            name: "{{ Auth::user()->role === 'student' ? (Auth::user()->is_anonymous ? 'Student' : Auth::user()->name) : 'Authority Staff' }}"
-                        });
-                });
-
-                form.addEventListener('submit', async function(e) {
-                    e.preventDefault(); 
-                    
-                    const body = textarea.value.trim();
-                    if (!body) return;
-
-                    textarea.disabled = true; 
-                    
-                    try {
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json', 
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                            },
-                            body: JSON.stringify({ body: body })
-                        });
-
-                        if (response.ok) {
-                            const data = await response.json();
-                            textarea.value = ''; 
-
-                            const indicator = document.getElementById(`typing-indicator-${grievanceId}`);
-                            if (indicator) {
-                                indicator.classList.remove('opacity-100');
-                                indicator.classList.add('opacity-0');
-                            }
-
-                            const chatContainer = document.getElementById(`chat-container-${grievanceId}`);
-                            if (chatContainer) {
-                                const emptyState = chatContainer.querySelector('.text-center');
-                                if (emptyState) emptyState.remove();
-
-                                const myMessageHTML = `
-                                    <div class="flex justify-end mb-2 animate-[fadeIn_0.3s_ease-out]">
-                                        <div class="bg-emerald-700 text-white p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm">
-                                            <p class="text-sm leading-relaxed whitespace-pre-wrap">${data.comment.body}</p>
-                                            <span class="text-[10px] text-emerald-200 mt-1.5 block text-right font-medium">
-                                                You • Just now
-                                            </span>
-                                        </div>
-                                    </div>
-                                `;
-                                chatContainer.insertAdjacentHTML('afterbegin', myMessageHTML);
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Chat Error:', error);
-                    } finally {
-                        textarea.disabled = false;
-                        textarea.focus();
-                    }
-                });
-            });
-        };
-
-        document.addEventListener('DOMContentLoaded', function() {
-            window.initializeChatForms();
-        });
     </script>
 
     <script>

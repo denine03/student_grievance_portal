@@ -58,7 +58,7 @@
             
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800 text-[10px] font-black uppercase tracking-widest mb-8">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Official Student Portal Live
+                Student Portal Is Live
             </div>
             
             <h2 class="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[1.1] mb-6">

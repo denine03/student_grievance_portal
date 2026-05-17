@@ -67,6 +67,9 @@ Route::middleware(['auth'])->prefix('authority')->group(function () {
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/grievances', [AdminController::class, 'grievances'])->name('admin.grievances');
+    Route::patch('/grievances/{grievance}/status', [AdminController::class, 'updateGrievanceStatus'])->name('admin.grievances.update');
+    Route::delete('/grievances/{grievance}', [AdminController::class, 'deleteGrievance'])->name('admin.grievances.destroy');
 
     Route::get('/invite-staff', function () {
         return view('admin.invite-staff');
