@@ -98,6 +98,43 @@ class AdminController extends Controller
             'school' => 'nullable|string|max:255',
         ]);
 
+        if ($validated['role'] === 'hod') {
+            $exists = User::where('role', 'hod')
+                ->where('department', $validated['department'])
+                ->where('id', '!=', $user->id)
+                ->exists();
+                
+            if ($exists) {
+                return response()->json(['message' => "An HOD is already registered for {$validated['department']}."], 422);
+            }
+        } 
+        elseif ($validated['role'] === 'dean') {
+            $exists = User::where('role', 'dean')
+                ->where('school', $validated['school'])
+                ->where('id', '!=', $user->id)
+                ->exists();
+                
+            if ($exists) {
+                return response()->json(['message' => "A Dean is already registered for {$validated['school']}."], 422);
+            }
+        } 
+        elseif ($validated['role'] === 'dsw_head') {
+            $exists = User::where('role', 'dsw_head')
+                ->where('id', '!=', $user->id)
+                ->exists();
+                
+            if ($exists) {
+                return response()->json(['message' => "The Directorate of Student Welfare (DSW) Head position is already filled."], 422);
+            }
+        }
+
+        if ($validated['role'] === 'dsw_head' || $validated['role'] === 'admin') {
+            $validated['school'] = null;
+            $validated['department'] = null;
+        } elseif ($validated['role'] === 'dean') {
+            $validated['department'] = null;
+        }
+
         $user->update($validated);
 
         if ($request->ajax() || $request->wantsJson()) {

@@ -90,7 +90,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
                 <h3 class="text-lg font-black text-slate-800 mb-2 tracking-tight">Direct Routing</h3>
-                <p class="text-sm text-slate-500 leading-relaxed font-medium">Your grievance is automatically routed to the correct authority—whether it's the HOD, Dean, or DSW—ensuring rapid response times.</p>
+                <p class="text-sm text-slate-500 leading-relaxed font-medium">Your grievance is automatically routed to the correct authority, whether it's the HOD, Dean, or DSW, ensuring rapid response times.</p>
             </div>
 
             <div class="bg-white p-8 rounded-3xl shadow-[0_2px_15px_-3px_rgba(6,78,59,0.05)] border border-slate-100 hover:border-emerald-200 transition-colors">

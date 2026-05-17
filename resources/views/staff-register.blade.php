@@ -61,6 +61,20 @@
         <div class="bg-white rounded-3xl shadow-[0_2px_15px_-3px_rgba(6,78,59,0.08)] border border-slate-100 p-8 sm:p-10 relative overflow-hidden">
             <div class="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-gradient-to-br from-emerald-50 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
+            @if ($errors->any())
+                <div id="error-banner" class="mb-6 relative z-10 bg-red-50/80 backdrop-blur-sm border border-red-200 text-red-700 px-5 py-4 rounded-2xl shadow-sm animate-[fadeIn_0.3s_ease-out]">
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <h3 class="font-bold text-sm uppercase tracking-widest text-red-800">Registration Failed</h3>
+                    </div>
+                    <ul class="list-disc list-inside text-xs font-semibold ml-2 space-y-1.5 text-red-600/90">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
             <form action="{{ route('staff.register') }}" method="POST" class="space-y-6 relative z-10">
                 @csrf
 
@@ -157,6 +171,17 @@
             const schoolSelect = document.getElementById('school');
             const departmentWrapper = document.getElementById('department-wrapper');
             const departmentSelect = document.getElementById('department');
+
+            const errorBanner = document.getElementById('error-banner');
+            if (errorBanner) {
+                setTimeout(() => {
+                    errorBanner.style.transition = 'all 0.5s ease-out';
+                    errorBanner.style.opacity = '0';
+                    errorBanner.style.transform = 'translateY(-10px)';
+                    
+                    setTimeout(() => errorBanner.remove(), 500);
+                }, 2000);
+            }
             
             const oldDepartment = "{{ old('department') }}";
 
@@ -211,18 +236,24 @@
                 if (role === 'dsw_head') {
                     hideWrapper(schoolWrapper);
                     schoolSelect.required = false;
+                    schoolSelect.value = '';
+                    
                     hideWrapper(departmentWrapper);
-                    departmentSelect.innerHTML = '<option value="Directorate of Student Welfare" selected>Directorate of Student Welfare</option>';
+                    departmentSelect.required = false;
+                    departmentSelect.innerHTML = '<option value="" selected>None</option>';
                 
                 } else if (role === 'dean') {
                     showWrapper(schoolWrapper);
                     schoolSelect.required = true;
+                    
                     hideWrapper(departmentWrapper);
-                    departmentSelect.innerHTML = '<option value="Dean\'s Office" selected>Dean\'s Office</option>';
+                    departmentSelect.required = false;
+                    departmentSelect.innerHTML = '<option value="" selected>None</option>';
                 
                 } else if (role === 'hod') {
                     showWrapper(schoolWrapper);
                     schoolSelect.required = true;
+                    
                     showWrapper(departmentWrapper);
                     departmentSelect.required = true;
                     

@@ -42,18 +42,34 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'min:8'],
             'role' => ['required', 'in:hod,dean,dsw_head'], 
-            'department' => ['required', 'string'],
-            'school' => ['required', 'string'],
+            'school' => ['required_if:role,hod,dean', 'nullable', 'string'], 
+            'department' => ['required_if:role,hod', 'nullable', 'string'],
         ]);
+
+        if ($validated['role'] === 'hod') {
+            if (User::where('role', 'hod')->where('department', $validated['department'])->exists()) {
+                return back()->withErrors(['role' => "An HOD is already registered for {$validated['department']}."])->withInput();
+            }
+        } 
+        elseif ($validated['role'] === 'dean') {
+            if (User::where('role', 'dean')->where('school', $validated['school'])->exists()) {
+                return back()->withErrors(['role' => "A Dean is already registered for {$validated['school']}."])->withInput();
+            }
+        } 
+        elseif ($validated['role'] === 'dsw_head') {
+            if (User::where('role', 'dsw_head')->exists()) {
+                return back()->withErrors(['role' => "The Directorate of Student Welfare (DSW) Head position is already filled."])->withInput();
+            }
+        }
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
-            'department' => $validated['department'],
-            'school' => $validated['school'],
             'student_id' => null, 
+            'school' => $validated['school'] ?? null,
+            'department' => $validated['department'] ?? null, 
         ]);
 
         Auth::login($user);
